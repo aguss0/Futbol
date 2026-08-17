@@ -14,7 +14,7 @@ function formatearFecha(fechaIso) {
   });
 }
 
-export default function TicketPartido({ partido }) {
+export default function TicketPartido({ partido, onEditar, onEliminar }) {
   const ganoA = partido.golesEquipoA > partido.golesEquipoB;
   const ganoB = partido.golesEquipoB > partido.golesEquipoA;
 
@@ -39,6 +39,32 @@ export default function TicketPartido({ partido }) {
           <div className="nombres">{nombresDe(partido, 'B')}</div>
         </div>
       </div>
+      {(onEditar || onEliminar) && (
+        <div className="ticket-acciones">
+          {onEditar && (
+            <button
+              type="button"
+              className="ticket-accion"
+              onClick={() => onEditar(partido.id)}
+              aria-label="Editar partido"
+              title="Editar"
+            >
+              ✎
+            </button>
+          )}
+          {onEliminar && (
+            <button
+              type="button"
+              className="ticket-accion ticket-accion-borrar"
+              onClick={() => onEliminar(partido.id)}
+              aria-label="Eliminar partido"
+              title="Eliminar"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

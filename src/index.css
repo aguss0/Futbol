@@ -10,6 +10,9 @@
   --display: 'Oswald', sans-serif;
   --texto: 'Inter', sans-serif;
   --marcador: 'Space Mono', monospace;
+
+  --pechera-a: #e8a63d;
+  --pechera-b: #3e6c8e;
 }
 
 * {
@@ -204,6 +207,38 @@ select {
   font-weight: 400;
 }
 
+.ticket-acciones {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--linea);
+}
+
+.ticket-accion {
+  flex: 1;
+  width: 38px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--cancha-oscuro);
+  opacity: 0.5;
+  border-bottom: 1px solid var(--linea);
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.ticket-accion:last-child {
+  border-bottom: none;
+}
+
+.ticket-accion:hover {
+  opacity: 1;
+  background: var(--tiza);
+}
+
+.ticket-accion-borrar:hover {
+  color: #b3402a;
+}
+
 /* --- Secciones --- */
 
 .seccion {
@@ -322,12 +357,89 @@ button:focus-visible {
   background: var(--tiza);
 }
 
-/* --- Selector de plantel para nuevo partido --- */
+/* --- Cancha visual (formación 1-2-2) --- */
 
-.equipos-grid {
+.campo-wrap {
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  box-shadow: 0 1px 2px rgba(16, 40, 31, 0.12);
+}
+
+.campo-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--cancha);
+}
+
+.campo-pasto {
+  fill: var(--cancha);
+}
+
+.campo-borde {
+  fill: none;
+  stroke: rgba(247, 245, 239, 0.35);
+  stroke-width: 2;
+}
+
+.campo-linea {
+  stroke: rgba(247, 245, 239, 0.35);
+  stroke-width: 2;
+}
+
+.campo-linea-fill {
+  fill: none;
+  stroke: rgba(247, 245, 239, 0.35);
+  stroke-width: 2;
+}
+
+.marcador-vacio {
+  fill: rgba(247, 245, 239, 0.12);
+  stroke: rgba(247, 245, 239, 0.5);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+
+.marcador-lleno {
+  stroke: rgba(16, 40, 31, 0.4);
+  stroke-width: 2;
+}
+
+.marcador-lleno.pechera-a {
+  fill: var(--pechera-a);
+}
+
+.marcador-lleno.pechera-b {
+  fill: var(--pechera-b);
+}
+
+.marcador-texto {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  fill: white;
+}
+
+.marcador-mas {
+  font-family: var(--display);
+  font-size: 18px;
+  fill: rgba(247, 245, 239, 0.55);
+}
+
+.marcador-nombre {
+  font-family: var(--texto);
+  font-size: 11px;
+  fill: var(--tiza);
+  opacity: 0.85;
+}
+
+/* --- Selectores de plantel por posición --- */
+
+.formacion-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
   margin-bottom: 18px;
 }
 
@@ -336,39 +448,34 @@ button:focus-visible {
   font-size: 13px;
   letter-spacing: 0.6px;
   text-transform: uppercase;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   color: var(--cancha-oscuro);
-}
-
-.lista-jugadores {
-  border: 1px solid var(--linea);
-  border-radius: 3px;
-  max-height: 220px;
-  overflow-y: auto;
-  background: var(--tiza);
-}
-
-.jugador-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  font-size: 13px;
-  border-bottom: 1px solid var(--linea);
-  cursor: pointer;
 }
 
-.jugador-item:last-child {
-  border-bottom: none;
+.chip-color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
-.jugador-item input {
-  width: auto;
+.chip-color.pechera-a {
+  background: var(--pechera-a);
 }
 
-.jugador-item.deshabilitado {
-  opacity: 0.35;
-  cursor: not-allowed;
+.chip-color.pechera-b {
+  background: var(--pechera-b);
+}
+
+.campo-posicion {
+  margin-bottom: 12px;
+}
+
+.campo-posicion label {
+  font-size: 11px;
 }
 
 .mensaje-error {
@@ -431,7 +538,19 @@ button:focus-visible {
     border-bottom: 1px dashed var(--linea);
     padding: 12px 14px;
   }
-  .equipos-grid {
+  .formacion-grid {
     grid-template-columns: 1fr;
+  }
+  .ticket-acciones {
+    flex-direction: row;
+    border-left: none;
+    border-top: 1px dashed var(--linea);
+  }
+  .ticket-accion {
+    border-bottom: none;
+    border-right: 1px solid var(--linea);
+  }
+  .ticket-accion:last-child {
+    border-right: none;
   }
 }

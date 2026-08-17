@@ -1,16 +1,31 @@
 import { useEffect, useState } from 'react';
-import { getPartidos } from '../lib/api.js';
+import { getPartidos, eliminarPartido } from '../lib/api.js';
 import TicketPartido from './TicketPartido.jsx';
 
-export default function Inicio() {
+export default function Inicio({ onEditar, refrescarKey }) {
   const [partidos, setPartidos] = useState(null);
   const [error, setError] = useState('');
 
-  useEffect(() => {
+  function cargar() {
     getPartidos()
       .then(setPartidos)
       .catch((e) => setError(e.message));
-  }, []);
+  }
+
+  useEffect(cargar, [refrescarKey]);
+
+  async function handleEliminar(id) {
+    const confirmado = window.confirm(
+      '¿Seguro que querés eliminar este partido? No se puede deshacer.'
+    );
+    if (!confirmado) return;
+    try {
+      await eliminarPartido(id);
+      cargar();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
 
   if (error) return <p className="mensaje-error">{error}</p>;
   if (!partidos) return <p>Cargando partidos…</p>;
@@ -28,7 +43,14 @@ export default function Inicio() {
             arrancá el histórico.
           </div>
         ) : (
-          ultimos5.map((p) => <TicketPartido key={p.id} partido={p} />)
+          ultimos5.map((p) => (
+            <TicketPartido
+              key={p.id}
+              partido={p}
+              onEditar={onEditar}
+              onEliminar={handleEliminar}
+            />
+          ))
         )}
       </div>
 
@@ -36,7 +58,12 @@ export default function Inicio() {
         <div className="seccion">
           <h2>Histórico completo</h2>
           {resto.map((p) => (
-            <TicketPartido key={p.id} partido={p} />
+            <TicketPartido
+              key={p.id}
+              partido={p}
+              onEditar={onEditar}
+              onEliminar={handleEliminar}
+            />
           ))}
         </div>
       )}

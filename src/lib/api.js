@@ -49,3 +49,32 @@ export async function crearPartido(payload) {
   });
   return manejarRespuesta(res);
 }
+
+export async function getPartido(id) {
+  const res = await fetch(`/api/partidos/${id}`);
+  return manejarRespuesta(res);
+}
+
+export async function actualizarPartido(id, payload) {
+  const res = await fetch(`/api/partidos/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  return manejarRespuesta(res);
+}
+
+export async function eliminarPartido(id) {
+  const res = await fetch(`/api/partidos/${id}`, { method: 'DELETE' });
+  if (!res.ok) {
+    let mensaje = 'No se pudo eliminar el partido';
+    try {
+      const data = await res.json();
+      mensaje = data.error || mensaje;
+    } catch {
+      // sin body
+    }
+    throw new Error(mensaje);
+  }
+  return true;
+}
