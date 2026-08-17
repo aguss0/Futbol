@@ -1,0 +1,437 @@
+:root {
+  --cancha: #1b4332;
+  --cancha-oscuro: #10281f;
+  --tiza: #f7f5ef;
+  --tinta: #16241c;
+  --ambar: #e8a63d;
+  --salvia: #9cb8a4;
+  --linea: rgba(22, 36, 28, 0.14);
+
+  --display: 'Oswald', sans-serif;
+  --texto: 'Inter', sans-serif;
+  --marcador: 'Space Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--texto);
+  color: var(--tinta);
+  background: var(--tiza);
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      var(--linea) 1px,
+      transparent 0
+    );
+  background-size: 22px 22px;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+.app {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px 64px;
+}
+
+/* --- Header --- */
+
+.encabezado {
+  padding: 40px 0 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.encabezado h1 {
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: var(--cancha-oscuro);
+}
+
+.encabezado h1 span {
+  color: var(--ambar);
+}
+
+.encabezado p {
+  margin: 4px 0 0;
+  color: var(--tinta);
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+/* --- Nav (tabs tipo entrada/ticket) --- */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--linea);
+  padding-bottom: 0;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  margin-right: 20px;
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  color: var(--tinta);
+  opacity: 0.55;
+  cursor: pointer;
+  position: relative;
+  top: 2px;
+}
+
+.tab.activo {
+  opacity: 1;
+  border-bottom: 2px solid var(--ambar);
+}
+
+/* --- Tarjeta ticket de partido --- */
+
+.ticket {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(16, 40, 31, 0.08);
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.ticket::after {
+  content: '';
+  position: absolute;
+  left: 132px;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px dashed var(--linea);
+}
+
+.ticket-info {
+  width: 132px;
+  flex-shrink: 0;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ticket-info .fecha {
+  font-family: var(--display);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--cancha-oscuro);
+}
+
+.ticket-info .cancha {
+  font-size: 12px;
+  color: var(--tinta);
+  opacity: 0.55;
+}
+
+.ticket-marcador {
+  flex: 1;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.equipo {
+  flex: 1;
+  min-width: 0;
+}
+
+.equipo .etiqueta {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.equipo.gano .etiqueta {
+  color: var(--ambar);
+  opacity: 1;
+}
+
+.equipo .nombres {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tinta);
+  opacity: 0.8;
+}
+
+.resultado {
+  font-family: var(--marcador);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--cancha-oscuro);
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+.resultado .sep {
+  opacity: 0.35;
+  margin: 0 4px;
+  font-weight: 400;
+}
+
+/* --- Secciones --- */
+
+.seccion {
+  margin-top: 40px;
+}
+
+.seccion h2 {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--cancha-oscuro);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seccion h2::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--ambar);
+  border-radius: 50%;
+}
+
+.vacio {
+  border: 1px dashed var(--linea);
+  border-radius: 4px;
+  padding: 28px;
+  text-align: center;
+  color: var(--tinta);
+  opacity: 0.55;
+  font-size: 14px;
+}
+
+/* --- Formularios --- */
+
+.card {
+  background: white;
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(16, 40, 31, 0.08);
+}
+
+.campo {
+  margin-bottom: 18px;
+}
+
+.campo label {
+  display: block;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--linea);
+  border-radius: 3px;
+  font-size: 14px;
+  background: var(--tiza);
+  color: var(--tinta);
+}
+
+.campo input:focus,
+.campo select:focus,
+button:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 1px;
+}
+
+.fila {
+  display: flex;
+  gap: 16px;
+}
+
+.fila > .campo {
+  flex: 1;
+}
+
+.btn {
+  font-family: var(--display);
+  letter-spacing: 0.4px;
+  font-size: 14px;
+  padding: 11px 22px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  background: var(--cancha);
+  color: var(--tiza);
+  transition: background 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--cancha-oscuro);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secundario {
+  background: transparent;
+  color: var(--cancha-oscuro);
+  border: 1px solid var(--linea);
+}
+
+.btn-secundario:hover {
+  background: var(--tiza);
+}
+
+/* --- Selector de plantel para nuevo partido --- */
+
+.equipos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.equipo-col h3 {
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  color: var(--cancha-oscuro);
+}
+
+.lista-jugadores {
+  border: 1px solid var(--linea);
+  border-radius: 3px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--tiza);
+}
+
+.jugador-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--linea);
+  cursor: pointer;
+}
+
+.jugador-item:last-child {
+  border-bottom: none;
+}
+
+.jugador-item input {
+  width: auto;
+}
+
+.jugador-item.deshabilitado {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.mensaje-error {
+  color: #b3402a;
+  font-size: 13px;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+.mensaje-ok {
+  color: var(--cancha);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+/* --- Lista de jugadores --- */
+
+.jugador-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.jugador-row:last-child {
+  border-bottom: none;
+}
+
+.jugador-row .nombre {
+  font-size: 14px;
+}
+
+.jugador-row .nombre.inactivo {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.form-inline {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-inline input {
+  flex: 1;
+}
+
+@media (max-width: 560px) {
+  .ticket {
+    flex-direction: column;
+  }
+  .ticket::after {
+    display: none;
+  }
+  .ticket-info {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--linea);
+    padding: 12px 14px;
+  }
+  .equipos-grid {
+    grid-template-columns: 1fr;
+  }
+}
