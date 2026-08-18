@@ -21,13 +21,30 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PATCH') {
-      const { id, activo } = req.body || {};
+      const { id, activo, media } = req.body || {};
       if (typeof id !== 'number') {
         return res.status(400).json({ error: 'Falta id de jugador' });
       }
+
+      const data = {};
+      if (typeof activo === 'boolean') data.activo = activo;
+      if (media !== undefined) {
+        if (media === null) {
+          data.media = null;
+        } else {
+          const n = Number(media);
+          if (!Number.isInteger(n) || n < 1 || n > 99) {
+            return res
+              .status(400)
+              .json({ error: 'La media debe ser un número entre 1 y 99' });
+          }
+          data.media = n;
+        }
+      }
+
       const jugador = await prisma.jugador.update({
         where: { id },
-        data: { activo },
+        data,
       });
       return res.status(200).json(jugador);
     }

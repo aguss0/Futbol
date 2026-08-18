@@ -26,11 +26,11 @@ export async function crearJugador(nombre) {
   return manejarRespuesta(res);
 }
 
-export async function toggleJugador(id, activo) {
+export async function actualizarJugador(id, campos) {
   const res = await fetch('/api/jugadores', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, activo }),
+    body: JSON.stringify({ id, ...campos }),
   });
   return manejarRespuesta(res);
 }

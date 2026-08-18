@@ -11,6 +11,7 @@ model Jugador {
   id        Int      @id @default(autoincrement())
   nombre    String
   activo    Boolean  @default(true)
+  media     Int?
   createdAt DateTime @default(now())
 
   participaciones ParticipacionPartido[]
