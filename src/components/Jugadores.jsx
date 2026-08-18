@@ -7,7 +7,7 @@ import {
 } from '../lib/api.js';
 import { calcularStats } from '../lib/stats.js';
 import MediaBadge from './MediaBadge.jsx';
-import GraficoForma from './GraficoForma.jsx';
+import UltimosResultados from './UltimosResultados.jsx';
 
 export default function Jugadores() {
   const [jugadores, setJugadores] = useState(null);
@@ -15,7 +15,6 @@ export default function Jugadores() {
   const [nombre, setNombre] = useState('');
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
-  const [expandidoId, setExpandidoId] = useState(null);
 
   function cargarJugadores() {
     getJugadores()
@@ -85,24 +84,29 @@ export default function Jugadores() {
         <div className="vacio">Todavía no cargaste jugadores.</div>
       ) : (
         jugadores.map((j) => {
-          const abierto = expandidoId === j.id;
-          const stats = abierto ? calcularStats(j.id, partidos) : null;
-
+          const stats = calcularStats(j.id, partidos);
           return (
             <div key={j.id} className="jugador-bloque">
               <div className="jugador-row">
-                <button
-                  type="button"
-                  className="jugador-nombre-btn"
-                  onClick={() => setExpandidoId(abierto ? null : j.id)}
-                >
-                  <span className={`chevron ${abierto ? 'abierto' : ''}`}>
-                    ›
-                  </span>
-                  <span className={`nombre ${!j.activo ? 'inactivo' : ''}`}>
-                    {j.nombre}
-                  </span>
-                </button>
+                <span className={`nombre ${!j.activo ? 'inactivo' : ''}`}>
+                  {j.nombre}
+                </span>
+
+                <div className="jugador-stats-inline">
+                  <div className="stats-mini">
+                    <span className="stats-mini-valor">{stats.pj}</span>
+                    <span className="stats-mini-label">PJ</span>
+                  </div>
+                  <div className="stats-mini">
+                    <span className="stats-mini-valor">{stats.pg}</span>
+                    <span className="stats-mini-label">G</span>
+                  </div>
+                  <div className="stats-mini">
+                    <span className="stats-mini-valor">{stats.pp}</span>
+                    <span className="stats-mini-label">P</span>
+                  </div>
+                  <UltimosResultados detalle={stats.ultimos5} />
+                </div>
 
                 <div className="jugador-row-acciones">
                   <MediaBadge
@@ -117,48 +121,6 @@ export default function Jugadores() {
                   </button>
                 </div>
               </div>
-
-              {abierto && (
-                <div className="stats-panel">
-                  {stats.pj === 0 ? (
-                    <p className="stats-vacio">
-                      Todavía no jugó ningún partido.
-                    </p>
-                  ) : (
-                    <>
-                      <div className="stats-grid">
-                        <div className="stats-item">
-                          <span className="stats-valor">{stats.pj}</span>
-                          <span className="stats-label">PJ</span>
-                        </div>
-                        <div className="stats-item">
-                          <span className="stats-valor">{stats.pg}</span>
-                          <span className="stats-label">PG</span>
-                        </div>
-                        <div className="stats-item">
-                          <span className="stats-valor">{stats.pe}</span>
-                          <span className="stats-label">PE</span>
-                        </div>
-                        <div className="stats-item">
-                          <span className="stats-valor">{stats.pp}</span>
-                          <span className="stats-label">PP</span>
-                        </div>
-                        <div className="stats-item">
-                          <span className="stats-valor">{stats.winrate}%</span>
-                          <span className="stats-label">Winrate</span>
-                        </div>
-                      </div>
-
-                      <div className="stats-forma">
-                        <span className="stats-forma-label">
-                          Últimos {stats.ultimos5.length}
-                        </span>
-                        <GraficoForma detalle={stats.ultimos5} />
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
             </div>
           );
         })

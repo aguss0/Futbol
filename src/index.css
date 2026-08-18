@@ -491,7 +491,7 @@ button:focus-visible {
   margin-top: 10px;
 }
 
-/* --- Jugadores: fila + badge de media + panel de stats --- */
+/* --- Jugadores: fila con stats en línea + badge de media --- */
 
 .jugador-bloque {
   border-bottom: 1px solid var(--linea);
@@ -505,42 +505,90 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 4px;
-  border-bottom: none;
+  gap: 16px;
+  padding: 12px 4px;
+  flex-wrap: wrap;
 }
 
-.jugador-nombre-btn {
+.jugador-row .nombre {
+  font-size: 14px;
+  flex-shrink: 0;
+  min-width: 90px;
+}
+
+.jugador-row .nombre.inactivo {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.jugador-stats-inline {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 0;
-  font-size: 14px;
-  color: var(--tinta);
+  gap: 18px;
+  flex: 1;
 }
 
-.chevron {
-  display: inline-block;
-  font-size: 16px;
-  color: var(--cancha);
-  transition: transform 0.15s ease;
+.stats-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 26px;
 }
 
-.chevron.abierto {
-  transform: rotate(90deg);
+.stats-mini-valor {
+  font-family: var(--marcador);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cancha-oscuro);
+}
+
+.stats-mini-label {
+  font-family: var(--display);
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.resultado-fila {
+  display: flex;
+  gap: 4px;
+}
+
+.resultado-vacio {
+  font-size: 12px;
+  opacity: 0.4;
+}
+
+.resultado-circulo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+}
+
+.resultado-g {
+  background: var(--cancha);
+}
+
+.resultado-e {
+  background: var(--salvia);
+}
+
+.resultado-p {
+  background: #b3402a;
 }
 
 .jugador-row-acciones {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.jugador-row .nombre.inactivo {
-  opacity: 0.4;
-  text-decoration: line-through;
+  flex-shrink: 0;
 }
 
 .media-badge {
@@ -592,89 +640,6 @@ button:focus-visible {
 
 .media-especial {
   background: linear-gradient(160deg, #a97fd1, #6f43a0);
-}
-
-.stats-panel {
-  padding: 6px 4px 18px 30px;
-}
-
-.stats-vacio {
-  font-size: 13px;
-  opacity: 0.55;
-  margin: 4px 0;
-}
-
-.stats-grid {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-
-.stats-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stats-valor {
-  font-family: var(--marcador);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--cancha-oscuro);
-}
-
-.stats-label {
-  font-family: var(--display);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  opacity: 0.5;
-}
-
-.stats-forma {
-  max-width: 320px;
-}
-
-.stats-forma-label {
-  display: block;
-  font-family: var(--display);
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  opacity: 0.5;
-  margin-bottom: 4px;
-}
-
-.forma-svg {
-  width: 100%;
-  max-width: 280px;
-  height: auto;
-}
-
-.forma-cero {
-  stroke: var(--linea);
-  stroke-width: 1;
-}
-
-.forma-texto {
-  font-family: var(--display);
-  font-size: 11px;
-  font-weight: 600;
-  fill: var(--tinta);
-  opacity: 0.6;
-}
-
-.barra-g {
-  fill: var(--cancha);
-}
-
-.barra-e {
-  fill: var(--salvia);
-}
-
-.barra-p {
-  fill: #b3402a;
 }
 
 .form-inline {
