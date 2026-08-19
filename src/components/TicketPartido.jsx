@@ -11,7 +11,7 @@ function formatearFecha(fechaIso) {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
-    timeZone: 'America/Argentina/Buenos_Aires',
+    timeZone: 'UTC',
   });
 }
 
