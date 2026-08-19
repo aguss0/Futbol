@@ -5,6 +5,7 @@ import TicketPartido from './TicketPartido.jsx';
 export default function Inicio({ onEditar, refrescarKey }) {
   const [partidos, setPartidos] = useState(null);
   const [error, setError] = useState('');
+  const [mostrarTodos, setMostrarTodos] = useState(false);
 
   function cargar() {
     getPartidos()
@@ -56,15 +57,27 @@ export default function Inicio({ onEditar, refrescarKey }) {
 
       {resto.length > 0 && (
         <div className="seccion">
-          <h2>Histórico completo</h2>
-          {resto.map((p) => (
-            <TicketPartido
-              key={p.id}
-              partido={p}
-              onEditar={onEditar}
-              onEliminar={handleEliminar}
-            />
-          ))}
+          <div className="seccion-header">
+            <h2>Histórico completo</h2>
+            <button
+              type="button"
+              className="btn-secundario btn btn-chico"
+              onClick={() => setMostrarTodos((v) => !v)}
+            >
+              {mostrarTodos
+                ? 'Ocultar'
+                : `Ver todos (${partidos.length})`}
+            </button>
+          </div>
+          {mostrarTodos &&
+            resto.map((p) => (
+              <TicketPartido
+                key={p.id}
+                partido={p}
+                onEditar={onEditar}
+                onEliminar={handleEliminar}
+              />
+            ))}
         </div>
       )}
     </>

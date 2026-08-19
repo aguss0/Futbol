@@ -265,6 +265,23 @@ select {
   border-radius: 50%;
 }
 
+.seccion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.seccion-header h2 {
+  margin-bottom: 0;
+}
+
+.btn-chico {
+  padding: 7px 14px;
+  font-size: 12px;
+}
+
 .vacio {
   border: 1px dashed var(--linea);
   border-radius: 4px;
