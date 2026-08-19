@@ -1,9 +1,9 @@
 export const POSICIONES = [
-  { key: 'arquero', label: 'Arquero' },
-  { key: 'defensor1', label: 'Defensor 1' },
-  { key: 'defensor2', label: 'Defensor 2' },
-  { key: 'delantero1', label: 'Delantero 1' },
-  { key: 'delantero2', label: 'Delantero 2' },
+  { key: 'arquero', label: 'Arquero', corta: 'ARQ' },
+  { key: 'defensor1', label: 'Defensor 1', corta: 'DEF' },
+  { key: 'defensor2', label: 'Defensor 2', corta: 'DEF' },
+  { key: 'delantero1', label: 'Delantero 1', corta: 'DEL' },
+  { key: 'delantero2', label: 'Delantero 2', corta: 'DEL' },
 ];
 
 // Coordenadas en un viewBox de 640x400, equipo A a la izquierda.
@@ -32,9 +32,13 @@ function iniciales(nombre) {
     .join('');
 }
 
-function Marcador({ x, y, jugador, colorClass }) {
+function Marcador({ x, y, jugador, colorClass, corta, onClick }) {
   return (
-    <g transform={`translate(${x}, ${y})`}>
+    <g
+      transform={`translate(${x}, ${y})`}
+      className="marcador-click"
+      onClick={onClick}
+    >
       <circle
         r="22"
         className={jugador ? `marcador-lleno ${colorClass}` : 'marcador-vacio'}
@@ -49,13 +53,13 @@ function Marcador({ x, y, jugador, colorClass }) {
         </text>
       )}
       <text textAnchor="middle" y="38" className="marcador-nombre">
-        {jugador ? jugador.nombre.split(' ')[0] : ''}
+        {jugador ? jugador.nombre.split(' ')[0] : corta}
       </text>
     </g>
   );
 }
 
-export default function CampoFormacion({ seleccionA, seleccionB }) {
+export default function CampoFormacion({ seleccionA, seleccionB, onSlotClick }) {
   return (
     <svg
       className="campo-svg"
@@ -69,22 +73,26 @@ export default function CampoFormacion({ seleccionA, seleccionB }) {
       <rect x="8" y="130" width="70" height="140" className="campo-linea-fill" />
       <rect x="562" y="130" width="70" height="140" className="campo-linea-fill" />
 
-      {POSICIONES.map(({ key }) => (
+      {POSICIONES.map(({ key, corta }) => (
         <Marcador
           key={`a-${key}`}
           x={COORDS_A[key].x}
           y={COORDS_A[key].y}
           jugador={seleccionA[key]}
           colorClass="pechera-a"
+          corta={corta}
+          onClick={() => onSlotClick?.('A', key)}
         />
       ))}
-      {POSICIONES.map(({ key }) => (
+      {POSICIONES.map(({ key, corta }) => (
         <Marcador
           key={`b-${key}`}
           x={COORDS_B[key].x}
           y={COORDS_B[key].y}
           jugador={seleccionB[key]}
           colorClass="pechera-b"
+          corta={corta}
+          onClick={() => onSlotClick?.('B', key)}
         />
       ))}
     </svg>

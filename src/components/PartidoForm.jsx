@@ -45,6 +45,7 @@ export default function PartidoForm({
   const [error, setError] = useState('');
   const [ok, setOk] = useState(false);
   const [guardando, setGuardando] = useState(false);
+  const [slotAbierto, setSlotAbierto] = useState(null); // { equipo, key } | null
 
   useEffect(() => {
     getJugadores()
@@ -165,56 +166,71 @@ export default function PartidoForm({
         </div>
       </div>
 
-      <div className="campo-wrap">
-        <CampoFormacion seleccionA={equipoA} seleccionB={equipoB} />
-      </div>
-
-      <div className="formacion-grid">
-        <div className="equipo-col">
-          <h3>
-            <span className="chip-color pechera-a" /> Equipo A
-          </h3>
-          {POSICIONES.map(({ key, label }) => (
-            <div className="campo campo-posicion" key={key}>
-              <label>{label}</label>
-              <select
-                value={equipoA[key]?.id || ''}
-                onChange={(e) => handleSelect('A', key, e.target.value)}
-              >
-                <option value="">— elegir jugador —</option>
-                {opcionesPara('A', key).map((j) => (
-                  <option key={j.id} value={j.id}>
-                    {j.nombre}
-                    {!j.activo ? ' (inactivo)' : ''}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
+      <div className="campo-contenedor">
+        <div className="campo-wrap">
+          <CampoFormacion
+            seleccionA={equipoA}
+            seleccionB={equipoB}
+            onSlotClick={(equipo, key) => setSlotAbierto({ equipo, key })}
+          />
         </div>
 
-        <div className="equipo-col">
-          <h3>
-            <span className="chip-color pechera-b" /> Equipo B
-          </h3>
-          {POSICIONES.map(({ key, label }) => (
-            <div className="campo campo-posicion" key={key}>
-              <label>{label}</label>
-              <select
-                value={equipoB[key]?.id || ''}
-                onChange={(e) => handleSelect('B', key, e.target.value)}
-              >
-                <option value="">— elegir jugador —</option>
-                {opcionesPara('B', key).map((j) => (
-                  <option key={j.id} value={j.id}>
+        {slotAbierto && (
+          <div
+            className="selector-overlay"
+            onClick={() => setSlotAbierto(null)}
+          >
+            <div className="selector-panel" onClick={(e) => e.stopPropagation()}>
+              <div className="selector-header">
+                <span>
+                  <span className={`chip-color pechera-${slotAbierto.equipo.toLowerCase()}`} />{' '}
+                  Equipo {slotAbierto.equipo} ·{' '}
+                  {POSICIONES.find((p) => p.key === slotAbierto.key).label}
+                </span>
+                <button
+                  type="button"
+                  className="selector-cerrar"
+                  onClick={() => setSlotAbierto(null)}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="selector-lista">
+                {opcionesPara(slotAbierto.equipo, slotAbierto.key).map((j) => (
+                  <button
+                    type="button"
+                    key={j.id}
+                    className="selector-item"
+                    onClick={() => {
+                      handleSelect(slotAbierto.equipo, slotAbierto.key, j.id);
+                      setSlotAbierto(null);
+                    }}
+                  >
                     {j.nombre}
                     {!j.activo ? ' (inactivo)' : ''}
-                  </option>
+                  </button>
                 ))}
-              </select>
+                {opcionesPara(slotAbierto.equipo, slotAbierto.key).length === 0 && (
+                  <p className="selector-vacio">No hay jugadores disponibles</p>
+                )}
+              </div>
+
+              {(slotAbierto.equipo === 'A' ? equipoA : equipoB)[slotAbierto.key] && (
+                <button
+                  type="button"
+                  className="selector-quitar"
+                  onClick={() => {
+                    handleSelect(slotAbierto.equipo, slotAbierto.key, '');
+                    setSlotAbierto(null);
+                  }}
+                >
+                  Quitar jugador
+                </button>
+              )}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="fila">

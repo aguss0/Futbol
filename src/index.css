@@ -362,7 +362,6 @@ button:focus-visible {
 .campo-wrap {
   border-radius: 6px;
   overflow: hidden;
-  margin-bottom: 22px;
   box-shadow: 0 1px 2px rgba(16, 40, 31, 0.12);
 }
 
@@ -434,25 +433,24 @@ button:focus-visible {
   opacity: 0.85;
 }
 
-/* --- Selectores de plantel por posición --- */
+/* --- Selección de plantel: click en la cancha --- */
 
-.formacion-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 18px;
+.campo-contenedor {
+  position: relative;
+  margin-bottom: 22px;
 }
 
-.equipo-col h3 {
-  font-family: var(--display);
-  font-size: 13px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  margin: 0 0 12px;
-  color: var(--cancha-oscuro);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.marcador-click {
+  cursor: pointer;
+}
+
+.marcador-click:hover .marcador-vacio {
+  stroke: var(--tiza);
+  fill: rgba(247, 245, 239, 0.22);
+}
+
+.marcador-click:hover .marcador-lleno {
+  stroke: var(--tiza);
 }
 
 .chip-color {
@@ -460,6 +458,7 @@ button:focus-visible {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  margin-right: 2px;
 }
 
 .chip-color.pechera-a {
@@ -470,12 +469,104 @@ button:focus-visible {
   background: var(--pechera-b);
 }
 
-.campo-posicion {
-  margin-bottom: 12px;
+.selector-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 40, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 16px;
+  z-index: 5;
 }
 
-.campo-posicion label {
-  font-size: 11px;
+.selector-panel {
+  background: white;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(16, 40, 31, 0.35);
+}
+
+.selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--linea);
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--cancha-oscuro);
+}
+
+.selector-cerrar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  opacity: 0.5;
+  padding: 2px;
+}
+
+.selector-cerrar:hover {
+  opacity: 1;
+}
+
+.selector-lista {
+  overflow-y: auto;
+  max-height: 260px;
+}
+
+.selector-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 11px 14px;
+  border: none;
+  border-bottom: 1px solid var(--linea);
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--tinta);
+}
+
+.selector-item:last-child {
+  border-bottom: none;
+}
+
+.selector-item:hover {
+  background: var(--tiza);
+}
+
+.selector-vacio {
+  padding: 14px;
+  font-size: 13px;
+  opacity: 0.55;
+  margin: 0;
+}
+
+.selector-quitar {
+  border: none;
+  border-top: 1px solid var(--linea);
+  background: none;
+  color: #b3402a;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.selector-quitar:hover {
+  background: rgba(179, 64, 42, 0.06);
 }
 
 .mensaje-error {
@@ -668,6 +759,9 @@ button:focus-visible {
   }
   .formacion-grid {
     grid-template-columns: 1fr;
+  }
+  .selector-panel {
+    max-width: 90%;
   }
   .ticket-acciones {
     flex-direction: row;
