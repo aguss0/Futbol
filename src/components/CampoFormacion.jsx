@@ -39,8 +39,9 @@ function Marcador({ x, y, jugador, colorClass, corta, onClick }) {
       className="marcador-click"
       onClick={onClick}
     >
+      <circle r="34" fill="transparent" style={{ pointerEvents: 'all' }} />
       <circle
-        r="22"
+        r="23"
         className={jugador ? `marcador-lleno ${colorClass}` : 'marcador-vacio'}
       />
       {jugador ? (
@@ -52,7 +53,7 @@ function Marcador({ x, y, jugador, colorClass, corta, onClick }) {
           +
         </text>
       )}
-      <text textAnchor="middle" y="38" className="marcador-nombre">
+      <text textAnchor="middle" y="40" className="marcador-nombre">
         {jugador ? jugador.nombre.split(' ')[0] : corta}
       </text>
     </g>

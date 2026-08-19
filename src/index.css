@@ -44,6 +44,15 @@ select {
   font-family: inherit;
 }
 
+button,
+.tab,
+.ticket-accion,
+.selector-item,
+.jugador-nombre-btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 .app {
   max-width: 860px;
   margin: 0 auto;
@@ -791,5 +800,66 @@ button:focus-visible {
   }
   .ticket-accion:last-child {
     border-right: none;
+  }
+
+  /* Evitar el zoom automático de iOS al enfocar inputs (necesita 16px+) */
+  .campo input,
+  .campo select,
+  .form-inline input,
+  .media-input {
+    font-size: 16px;
+  }
+
+  .app {
+    padding: 0 14px 48px;
+  }
+
+  .encabezado {
+    padding: 24px 0 14px;
+  }
+
+  .encabezado h1 {
+    font-size: 28px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .fila {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Tabs: que las 3 entren cómodas y sean fáciles de tocar */
+  .tabs {
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    flex: 1;
+    margin-right: 0;
+    text-align: center;
+    padding: 12px 2px;
+    font-size: 13px;
+  }
+
+  /* Targets de toque más generosos */
+  .btn {
+    min-height: 44px;
+    padding: 11px 18px;
+  }
+
+  .ticket-accion {
+    min-height: 44px;
+  }
+
+  .selector-item {
+    padding: 13px 14px;
+  }
+
+  .jugador-row-acciones {
+    gap: 8px;
   }
 }
