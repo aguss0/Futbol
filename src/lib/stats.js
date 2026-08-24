@@ -50,3 +50,51 @@ export function calcularGoleadores(partidos, limite = 5) {
     .sort((a, b) => b.goles - a.goles)
     .slice(0, limite);
 }
+
+// Calcula las duplas de jugadores que más jugaron juntos en el mismo
+// equipo, y su porcentaje de victorias jugando juntos. Requiere un mínimo
+// de partidos en común para evitar que una dupla de 1 partido con 100% de
+// victorias tape a duplas con más historial.
+export function calcularQuimica(partidos, limite = 5, minPartidosJuntos = 3) {
+  const duplas = new Map();
+
+  function keyPara(idA, idB) {
+    return idA < idB ? `${idA}-${idB}` : `${idB}-${idA}`;
+  }
+
+  partidos.forEach((p) => {
+    ['A', 'B'].forEach((equipo) => {
+      const del = p.participaciones.filter((pp) => pp.equipo === equipo);
+      const golesPropios = equipo === 'A' ? p.golesEquipoA : p.golesEquipoB;
+      const golesRival = equipo === 'A' ? p.golesEquipoB : p.golesEquipoA;
+      const gano = golesPropios > golesRival;
+
+      for (let i = 0; i < del.length; i++) {
+        for (let j = i + 1; j < del.length; j++) {
+          const a = del[i];
+          const b = del[j];
+          const key = keyPara(a.jugadorId, b.jugadorId);
+
+          const actual = duplas.get(key) || {
+            key,
+            jugadorAId: a.jugadorId,
+            jugadorBId: b.jugadorId,
+            nombreA: a.jugador.nombre,
+            nombreB: b.jugador.nombre,
+            pj: 0,
+            victorias: 0,
+          };
+          actual.pj += 1;
+          if (gano) actual.victorias += 1;
+          duplas.set(key, actual);
+        }
+      }
+    });
+  });
+
+  return Array.from(duplas.values())
+    .filter((d) => d.pj >= minPartidosJuntos)
+    .map((d) => ({ ...d, winrate: Math.round((d.victorias / d.pj) * 100) }))
+    .sort((a, b) => b.winrate - a.winrate || b.pj - a.pj)
+    .slice(0, limite);
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getPartidos, eliminarPartido } from '../lib/api.js';
 import TicketPartido from './TicketPartido.jsx';
 import TablaGoleadores from './TablaGoleadores.jsx';
+import TablaQuimica from './TablaQuimica.jsx';
 
 export default function Inicio({ onEditar, refrescarKey }) {
   const [partidos, setPartidos] = useState(null);
@@ -53,12 +54,14 @@ export default function Inicio({ onEditar, refrescarKey }) {
               onEliminar={handleEliminar}
             />
           ))
-          
         )}
       </div>
 
-      <TablaGoleadores partidos={partidos} />
-      
+      <div className="tablas-grid">
+        <TablaGoleadores partidos={partidos} />
+        <TablaQuimica partidos={partidos} />
+      </div>
+
       {resto.length > 0 && (
         <div className="seccion">
           <div className="seccion-header">

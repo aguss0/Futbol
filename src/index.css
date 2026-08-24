@@ -929,3 +929,75 @@ button:focus-visible {
   font-weight: 700;
   color: var(--cancha-oscuro);
 }
+/* --- Tablas secundarias (goleadores + química) en grid --- */
+
+.tablas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.tabla-secundaria h2 {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--cancha-oscuro);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabla-secundaria h2::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--ambar);
+  border-radius: 50%;
+}
+
+.vacio-chico {
+  padding: 18px;
+  font-size: 13px;
+}
+
+.quimica-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.quimica-fila:last-child {
+  border-bottom: none;
+}
+
+.quimica-nombres {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.quimica-y {
+  opacity: 0.4;
+  margin: 0 2px;
+}
+
+.quimica-winrate {
+  font-family: var(--marcador);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cancha-oscuro);
+  flex-shrink: 0;
+}
+
+@media (max-width: 560px) {
+  .tablas-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+}

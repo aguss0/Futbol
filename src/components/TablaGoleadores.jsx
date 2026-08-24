@@ -6,7 +6,7 @@ export default function TablaGoleadores({ partidos }) {
   if (goleadores.length === 0) return null;
 
   return (
-    <div className="seccion">
+    <div className="tabla-secundaria">
       <h2>Tabla de goleadores</h2>
       <div className="tabla-goleadores">
         {goleadores.map((g, i) => (
