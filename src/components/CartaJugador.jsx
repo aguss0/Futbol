@@ -57,10 +57,10 @@ export default function CartaJugador({ jugador }) {
           <image
             href={jugador.fotoUrl}
             x="10"
-            y="60"
+            y="10"
             width="200"
-            height="240"
-            preserveAspectRatio="xMidYMid slice"
+            height="290"
+            preserveAspectRatio="xMidYMin slice"
           />
         </g>
       )}
