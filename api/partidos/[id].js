@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-      const { fecha, cancha, golesEquipoA, golesEquipoB, equipoA, equipoB } =
+      const { fecha, cancha, golesEquipoA, golesEquipoB, equipoA, equipoB, goleadores } =
         req.body || {};
 
       if (!fecha) {
@@ -42,9 +42,19 @@ export default async function handler(req, res) {
           .json({ error: 'Cada equipo necesita al menos un jugador' });
       }
 
+      const golesPorJugador = goleadores || {};
+
       const nuevasParticipaciones = [
-        ...equipoA.map((jugadorId) => ({ jugadorId, equipo: 'A' })),
-        ...equipoB.map((jugadorId) => ({ jugadorId, equipo: 'B' })),
+        ...equipoA.map((jugadorId) => ({
+          jugadorId,
+          equipo: 'A',
+          goles: Number(golesPorJugador[jugadorId]) || 0,
+        })),
+        ...equipoB.map((jugadorId) => ({
+          jugadorId,
+          equipo: 'B',
+          goles: Number(golesPorJugador[jugadorId]) || 0,
+        })),
       ];
 
       const partido = await prisma.$transaction(async (tx) => {

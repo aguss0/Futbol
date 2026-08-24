@@ -105,6 +105,10 @@ export default function Jugadores() {
                     <span className="stats-mini-valor">{stats.pp}</span>
                     <span className="stats-mini-label">P</span>
                   </div>
+                  <div className="stats-mini">
+                  <span className="stats-mini-valor">{stats.goles}</span>
+                  <span className="stats-mini-label">GOL</span>
+                  </div>
                   <UltimosResultados detalle={stats.ultimos5} />
                 </div>
 

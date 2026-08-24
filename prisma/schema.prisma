@@ -33,6 +33,7 @@ model ParticipacionPartido {
   partidoId Int
   jugadorId Int
   equipo    String // "A" o "B"
+  goles     Int    @default(0)
 
   partido Partido @relation(fields: [partidoId], references: [id], onDelete: Cascade)
   jugador Jugador @relation(fields: [jugadorId], references: [id])

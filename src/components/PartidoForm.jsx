@@ -42,6 +42,7 @@ export default function PartidoForm({
   const [golesB, setGolesB] = useState(
     partidoInicial ? String(partidoInicial.golesEquipoB) : ''
   );
+  const [goleadores, setGoleadores] = useState({}); // { [jugadorId]: cantidadDeGoles }
   const [error, setError] = useState('');
   const [ok, setOk] = useState(false);
   const [guardando, setGuardando] = useState(false);
@@ -58,6 +59,12 @@ export default function PartidoForm({
       const porId = Object.fromEntries(jugadores.map((j) => [j.id, j]));
       setEquipoA(armarEquipoInicial(partidoInicial.participaciones, 'A', porId));
       setEquipoB(armarEquipoInicial(partidoInicial.participaciones, 'B', porId));
+
+      const golesIniciales = {};
+      partidoInicial.participaciones.forEach((pp) => {
+        golesIniciales[pp.jugadorId] = pp.goles || 0;
+      });
+      setGoleadores(golesIniciales);
     }
   }, [jugadores, partidoInicial]);
 
@@ -91,6 +98,24 @@ export default function PartidoForm({
     setter((prev) => ({ ...prev, [key]: jugador || null }));
   }
 
+  // Lista plana de los jugadores ya elegidos en la formación, con su equipo,
+  // para poder cargarles los goles.
+  function jugadoresElegidos() {
+    const lista = [];
+    POSICIONES.forEach(({ key }) => {
+      if (equipoA[key]) lista.push({ equipo: 'A', jugador: equipoA[key] });
+    });
+    POSICIONES.forEach(({ key }) => {
+      if (equipoB[key]) lista.push({ equipo: 'B', jugador: equipoB[key] });
+    });
+    return lista;
+  }
+
+  function handleGolJugador(jugadorId, valor) {
+    const n = valor === '' ? 0 : Math.max(0, Number(valor));
+    setGoleadores((prev) => ({ ...prev, [jugadorId]: n }));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
@@ -117,6 +142,7 @@ export default function PartidoForm({
         golesEquipoB: Number(golesB),
         equipoA: idsA,
         equipoB: idsB,
+        goleadores,
       });
       setOk(true);
       if (!partidoInicial) {
@@ -125,6 +151,7 @@ export default function PartidoForm({
         setCancha('');
         setGolesA('');
         setGolesB('');
+        setGoleadores({});
       }
     } catch (e) {
       setError(e.message);
@@ -253,6 +280,27 @@ export default function PartidoForm({
           />
         </div>
       </div>
+
+      {jugadoresElegidos().length > 0 && (
+        <div className="seccion" style={{ marginTop: 0 }}>
+          <h2>Goleadores</h2>
+          <div className="card" style={{ padding: 12 }}>
+            {jugadoresElegidos().map(({ equipo, jugador }) => (
+              <div key={jugador.id} className="goleador-row">
+                <span className={`chip-color pechera-${equipo.toLowerCase()}`} />
+                <span className="goleador-nombre">{jugador.nombre}</span>
+                <input
+                  type="number"
+                  min="0"
+                  className="goleador-input"
+                  value={goleadores[jugador.id] ?? 0}
+                  onChange={(e) => handleGolJugador(jugador.id, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {error && <p className="mensaje-error">{error}</p>}
 
