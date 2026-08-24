@@ -8,6 +8,7 @@ import {
 import { calcularStats } from '../lib/stats.js';
 import MediaBadge from './MediaBadge.jsx';
 import UltimosResultados from './UltimosResultados.jsx';
+import CartaJugador from './CartaJugador.jsx';
 
 export default function Jugadores() {
   const [jugadores, setJugadores] = useState(null);
@@ -15,6 +16,7 @@ export default function Jugadores() {
   const [nombre, setNombre] = useState('');
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
+  const [cartaAbierta, setCartaAbierta] = useState(null); // jugador | null
 
   function cargarJugadores() {
     getJugadores()
@@ -88,7 +90,11 @@ export default function Jugadores() {
           return (
             <div key={j.id} className="jugador-bloque">
               <div className="jugador-row">
-                <span className={`nombre ${!j.activo ? 'inactivo' : ''}`}>
+                <span
+                  className={`nombre ${!j.activo ? 'inactivo' : ''}`}
+                  onClick={() => setCartaAbierta(j)}
+                  title="Ver carta"
+                >
                   {j.nombre}
                 </span>
 
@@ -106,8 +112,8 @@ export default function Jugadores() {
                     <span className="stats-mini-label">P</span>
                   </div>
                   <div className="stats-mini">
-                  <span className="stats-mini-valor">{stats.goles}</span>
-                  <span className="stats-mini-label">GOL</span>
+                    <span className="stats-mini-valor">{stats.goles}</span>
+                    <span className="stats-mini-label">GOL</span>
                   </div>
                   <UltimosResultados detalle={stats.ultimos5} />
                 </div>
@@ -128,6 +134,31 @@ export default function Jugadores() {
             </div>
           );
         })
+      )}
+
+      {cartaAbierta && (
+        <div
+          className="carta-overlay"
+          onClick={() => setCartaAbierta(null)}
+        >
+          <div
+            className="carta-contenedor"
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: 'relative' }}
+          >
+            <button
+              type="button"
+              className="carta-cerrar"
+              onClick={() => setCartaAbierta(null)}
+            >
+              ✕
+            </button>
+            <CartaJugador
+              jugador={cartaAbierta}
+              stats={calcularStats(cartaAbierta.id, partidos)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
