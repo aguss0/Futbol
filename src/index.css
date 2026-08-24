@@ -1095,17 +1095,15 @@ button:focus-visible {
   background: white;
 }
 
-.foto-input {
-  width: 160px;
-  height: 38px;
-  padding: 0 10px;
-  border: 1px solid var(--linea);
-  border-radius: 6px;
-  font-size: 13px;
-}
-
 @media (max-width: 560px) {
   .foto-input {
     width: 130px;
   }
+}
+
+.foto-error {
+  position: absolute;
+  font-size: 11px;
+  margin-top: 44px;
+  white-space: nowrap;
 }

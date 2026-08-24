@@ -78,3 +78,23 @@ export async function eliminarPartido(id) {
   }
   return true;
 }
+
+export async function subirFoto(file) {
+  const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': file.type },
+    body: file,
+  });
+  if (!res.ok) {
+    let mensaje = 'No se pudo subir la foto';
+    try {
+      const data = await res.json();
+      mensaje = data.error || mensaje;
+    } catch {
+      // sin body
+    }
+    throw new Error(mensaje);
+  }
+  const data = await res.json();
+  return data.url;
+}

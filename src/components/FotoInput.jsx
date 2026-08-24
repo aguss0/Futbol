@@ -1,55 +1,52 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { subirFoto } from '../lib/api.js';
 
 export default function FotoInput({ fotoUrl, onGuardar }) {
-  const [editando, setEditando] = useState(false);
-  const [valor, setValor] = useState(fotoUrl || '');
-  const [guardando, setGuardando] = useState(false);
+  const inputRef = useRef(null);
+  const [subiendo, setSubiendo] = useState(false);
+  const [error, setError] = useState('');
 
-  async function confirmar() {
-    const nueva = valor.trim();
-    if (nueva === (fotoUrl || '')) {
-      setEditando(false);
+  async function handleArchivo(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // permite volver a elegir el mismo archivo después
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Elegí un archivo de imagen (jpg, png, etc.)');
       return;
     }
-    setGuardando(true);
-    try {
-      await onGuardar(nueva || null);
-    } finally {
-      setGuardando(false);
-      setEditando(false);
-    }
-  }
 
-  if (editando) {
-    return (
-      <input
-        className="foto-input"
-        type="url"
-        placeholder="URL de la foto"
-        autoFocus
-        value={valor}
-        disabled={guardando}
-        onChange={(e) => setValor(e.target.value)}
-        onBlur={confirmar}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') e.target.blur();
-          if (e.key === 'Escape') {
-            setValor(fotoUrl || '');
-            setEditando(false);
-          }
-        }}
-      />
-    );
+    setError('');
+    setSubiendo(true);
+    try {
+      const url = await subirFoto(file);
+      await onGuardar(url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubiendo(false);
+    }
   }
 
   return (
-    <button
-      type="button"
-      className="foto-badge"
-      onClick={() => setEditando(true)}
-      title={fotoUrl ? 'Cambiar foto' : 'Agregar foto'}
-    >
-      📷
-    </button>
+    <>
+      <button
+        type="button"
+        className="foto-badge"
+        onClick={() => inputRef.current?.click()}
+        disabled={subiendo}
+        title={fotoUrl ? 'Cambiar foto' : 'Agregar foto'}
+      >
+        {subiendo ? '…' : '📷'}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleArchivo}
+      />
+      {error && <p className="mensaje-error foto-error">{error}</p>}
+    </>
   );
 }
