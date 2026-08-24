@@ -1178,3 +1178,12 @@ button:focus-visible {
   background: var(--tiza);
   padding: 2px;
 }
+
+.carta-nombre {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  fill: var(--tinta);
+  text-transform: uppercase;
+}

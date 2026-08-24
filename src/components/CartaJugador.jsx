@@ -60,21 +60,24 @@ export default function CartaJugador({ jugador }) {
         </clipPath>
       </defs>
 
-      {/* Fondo (se ve en los bordes si la foto no cubre todo) */}
+      {/* Fondo dorado (queda visible arriba, donde va la columna de datos) */}
       <path d={SHIELD_PATH} fill={`url(#${gradId})`} />
 
-      {/* Foto del jugador, recortada con la forma del escudo */}
+      {/* Foto del jugador: arranca más abajo, para no pisar la columna de
+          datos (media/posición/bandera/escudo), y una franja translúcida
+          al pie para que el nombre se lea bien encima. */}
       {jugador.fotoUrl && (
         <g clipPath={`url(#${clipId})`} style={{ display: mostrarFoto ? 'block' : 'none' }}>
           <image
             href={jugador.fotoUrl}
             x="10"
-            y="10"
+            y="165"
             width="200"
-            height="290"
+            height="135"
             preserveAspectRatio="xMidYMin slice"
             onError={() => setErrorFoto(true)}
           />
+          <rect x="0" y="256" width="220" height="54" fill={`url(#${gradId})`} opacity="0.93" />
         </g>
       )}
 
@@ -89,45 +92,49 @@ export default function CartaJugador({ jugador }) {
       {/* Avatar con iniciales: fallback si no hay foto, o si la foto rompió */}
       {!mostrarFoto && (
         <>
-          <circle cx="110" cy="180" r="58" className="carta-avatar-fondo" />
-          <text x="110" y="198" textAnchor="middle" className="carta-avatar-texto">
+          <circle cx="110" cy="190" r="58" className="carta-avatar-fondo" />
+          <text x="110" y="208" textAnchor="middle" className="carta-avatar-texto">
             {iniciales(jugador.nombre)}
           </text>
         </>
       )}
 
-      {/* Media y posición, arriba a la izquierda */}
-      <text x="26" y="70" className="carta-media">
+      {/* Columna de datos: media, posición, bandera y escudo, con
+          espaciado parejo, siempre alineados a la izquierda. */}
+      <text x="26" y="62" className="carta-media">
         {jugador.media ?? '—'}
       </text>
-      <text x="26" y="92" className="carta-posicion">
+      <text x="26" y="85" className="carta-posicion">
         {jugador.posicion || '—'}
       </text>
 
-      {/* Bandera, debajo de la posición */}
       {mostrarBandera && (
         <image
           href={urlBandera}
           x="24"
-          y="100"
-          width="32"
-          height="22"
+          y="95"
+          width="34"
+          height="24"
           onError={() => setErrorBandera(true)}
         />
       )}
 
-      {/* Escudo del club, debajo de la bandera */}
       {mostrarEscudo && (
         <image
           href={jugador.escudoUrl}
-          x="26"
-          y="128"
-          width="28"
-          height="28"
+          x="25"
+          y="127"
+          width="32"
+          height="32"
           preserveAspectRatio="xMidYMid meet"
           onError={() => setErrorEscudo(true)}
         />
       )}
+
+      {/* Nombre, siempre abajo, centrado */}
+      <text x="110" y="286" textAnchor="middle" className="carta-nombre">
+        {jugador.nombre}
+      </text>
     </svg>
   );
 }
