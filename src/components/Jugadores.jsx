@@ -7,6 +7,7 @@ import {
 } from '../lib/api.js';
 import { calcularStats } from '../lib/stats.js';
 import MediaBadge from './MediaBadge.jsx';
+import FotoInput from './FotoInput.jsx';
 import UltimosResultados from './UltimosResultados.jsx';
 import CartaJugador from './CartaJugador.jsx';
 
@@ -59,6 +60,15 @@ export default function Jugadores() {
   async function handleMedia(j, nuevaMedia) {
     try {
       await actualizarJugador(j.id, { media: nuevaMedia });
+      cargarJugadores();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function handleFoto(j, nuevaFotoUrl) {
+    try {
+      await actualizarJugador(j.id, { fotoUrl: nuevaFotoUrl });
       cargarJugadores();
     } catch (e) {
       setError(e.message);
@@ -119,6 +129,10 @@ export default function Jugadores() {
                 </div>
 
                 <div className="jugador-row-acciones">
+                  <FotoInput
+                    fotoUrl={j.fotoUrl}
+                    onGuardar={(url) => handleFoto(j, url)}
+                  />
                   <MediaBadge
                     media={j.media}
                     onGuardar={(n) => handleMedia(j, n)}
@@ -153,10 +167,7 @@ export default function Jugadores() {
             >
               ✕
             </button>
-            <CartaJugador
-              jugador={cartaAbierta}
-              stats={calcularStats(cartaAbierta.id, partidos)}
-            />
+            <CartaJugador jugador={cartaAbierta} />
           </div>
         </div>
       )}

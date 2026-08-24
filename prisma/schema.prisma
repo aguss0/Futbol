@@ -12,6 +12,7 @@ model Jugador {
   nombre    String
   activo    Boolean  @default(true)
   media     Int?
+  fotoUrl   String?
   createdAt DateTime @default(now())
 
   participaciones ParticipacionPartido[]

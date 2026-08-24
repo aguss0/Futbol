@@ -1053,34 +1053,6 @@ button:focus-visible {
   fill: var(--tinta);
 }
 
-.carta-nombre {
-  font-family: var(--display);
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  fill: var(--tinta);
-  text-transform: uppercase;
-}
-
-.carta-linea {
-  stroke: rgba(22, 36, 28, 0.25);
-  stroke-width: 1;
-}
-
-.carta-stat-valor {
-  font-family: var(--marcador);
-  font-size: 16px;
-  font-weight: 700;
-  fill: var(--tinta);
-}
-
-.carta-stat-label {
-  font-family: var(--display);
-  font-size: 9px;
-  letter-spacing: 0.4px;
-  fill: rgba(22, 36, 28, 0.6);
-}
-
 .carta-cerrar {
   position: absolute;
   top: -14px;
@@ -1103,4 +1075,37 @@ button:focus-visible {
 .jugador-row .nombre:hover {
   text-decoration: underline;
   text-decoration-color: var(--ambar);
+}
+
+.foto-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  border: 1px dashed var(--linea);
+  background: var(--tiza);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.foto-badge:hover {
+  background: white;
+}
+
+.foto-input {
+  width: 160px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 560px) {
+  .foto-input {
+    width: 130px;
+  }
 }

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PATCH') {
-      const { id, activo, media } = req.body || {};
+      const { id, activo, media, fotoUrl } = req.body || {};
       if (typeof id !== 'number') {
         return res.status(400).json({ error: 'Falta id de jugador' });
       }
@@ -40,6 +40,9 @@ export default async function handler(req, res) {
           }
           data.media = n;
         }
+      }
+      if (fotoUrl !== undefined) {
+        data.fotoUrl = fotoUrl ? fotoUrl.trim() : null;
       }
 
       const jugador = await prisma.jugador.update({

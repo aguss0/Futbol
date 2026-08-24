@@ -23,10 +23,14 @@ function iniciales(nombre) {
     .join('');
 }
 
-export default function CartaJugador({ jugador, stats }) {
+const SHIELD_PATH =
+  'M10,0 H210 V190 C210,240 165,260 110,300 C55,260 10,240 10,190 Z';
+
+export default function CartaJugador({ jugador }) {
   const nivel = nivelDe(jugador.media);
   const [colorA, colorB] = GRADIENTES[nivel];
   const gradId = `carta-grad-${jugador.id}`;
+  const clipId = `carta-clip-${jugador.id}`;
 
   return (
     <svg
@@ -39,61 +43,53 @@ export default function CartaJugador({ jugador, stats }) {
           <stop offset="0%" stopColor={colorA} />
           <stop offset="100%" stopColor={colorB} />
         </linearGradient>
+        <clipPath id={clipId}>
+          <path d={SHIELD_PATH} />
+        </clipPath>
       </defs>
 
-      {/* Forma escudo */}
+      {/* Fondo (se ve en los bordes si la foto no cubre todo) */}
+      <path d={SHIELD_PATH} fill={`url(#${gradId})`} />
+
+      {/* Foto del jugador, recortada con la forma del escudo */}
+      {jugador.fotoUrl && (
+        <g clipPath={`url(#${clipId})`}>
+          <image
+            href={jugador.fotoUrl}
+            x="10"
+            y="60"
+            width="200"
+            height="240"
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>
+      )}
+
+      {/* Borde del escudo, arriba de la foto */}
       <path
-        d="M10,0 H210 V190 C210,240 165,260 110,300 C55,260 10,240 10,190 Z"
-        fill={`url(#${gradId})`}
-        stroke="rgba(255,255,255,0.5)"
+        d={SHIELD_PATH}
+        fill="none"
+        stroke="rgba(255,255,255,0.55)"
         strokeWidth="2"
       />
 
-      {/* Media */}
+      {/* Avatar con iniciales, solo si no hay foto cargada */}
+      {!jugador.fotoUrl && (
+        <>
+          <circle cx="110" cy="180" r="58" className="carta-avatar-fondo" />
+          <text x="110" y="198" textAnchor="middle" className="carta-avatar-texto">
+            {iniciales(jugador.nombre)}
+          </text>
+        </>
+      )}
+
+      {/* Media y posición, siempre arriba a la izquierda */}
       <text x="26" y="70" className="carta-media">
         {jugador.media ?? '—'}
       </text>
       <text x="26" y="92" className="carta-posicion">
         JUG
       </text>
-
-      {/* Avatar con iniciales */}
-      <circle cx="110" cy="150" r="58" className="carta-avatar-fondo" />
-      <text x="110" y="168" textAnchor="middle" className="carta-avatar-texto">
-        {iniciales(jugador.nombre)}
-      </text>
-
-      {/* Nombre */}
-      <text x="110" y="245" textAnchor="middle" className="carta-nombre">
-        {jugador.nombre}
-      </text>
-
-      {/* Stats mini, si vienen */}
-      {stats && (
-        <g>
-          <line x1="35" y1="262" x2="185" y2="262" className="carta-linea" />
-          <text x="55" y="284" textAnchor="middle" className="carta-stat-valor">
-            {stats.pj}
-          </text>
-          <text x="55" y="298" textAnchor="middle" className="carta-stat-label">
-            PJ
-          </text>
-
-          <text x="110" y="284" textAnchor="middle" className="carta-stat-valor">
-            {stats.pg}
-          </text>
-          <text x="110" y="298" textAnchor="middle" className="carta-stat-label">
-            G
-          </text>
-
-          <text x="165" y="284" textAnchor="middle" className="carta-stat-valor">
-            {stats.goles}
-          </text>
-          <text x="165" y="298" textAnchor="middle" className="carta-stat-label">
-            GOL
-          </text>
-        </g>
-      )}
     </svg>
   );
 }
