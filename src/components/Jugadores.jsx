@@ -76,9 +76,9 @@ export default function Jugadores() {
     }
   }
 
-  async function handleEquipoNacionalidad(j, { equipo, nacionalidad }) {
+  async function handleDetalles(j, datos) {
     try {
-      await actualizarJugador(j.id, { equipo, nacionalidad });
+      await actualizarJugador(j.id, datos);
       cargarJugadores();
     } catch (e) {
       setError(e.message);
@@ -145,8 +145,10 @@ export default function Jugadores() {
                   />
                   <EquipoNacionalidadInput
                     equipo={j.equipo}
+                    escudoUrl={j.escudoUrl}
+                    posicion={j.posicion}
                     nacionalidad={j.nacionalidad}
-                    onGuardar={(datos) => handleEquipoNacionalidad(j, datos)}
+                    onGuardar={(datos) => handleDetalles(j, datos)}
                   />
                   <MediaBadge
                     media={j.media}

@@ -14,7 +14,9 @@ model Jugador {
   media        Int?
   fotoUrl      String?
   equipo       String?
-  nacionalidad String?  // código ISO de 2 letras, ej: "AR", "BR", "ES"
+  escudoUrl    String?
+  posicion     String?  // ARQ, DEF, MED o DEL
+  nacionalidad String?
   createdAt    DateTime @default(now())
 
   participaciones ParticipacionPartido[]

@@ -32,6 +32,7 @@ const SHIELD_PATH =
 export default function CartaJugador({ jugador }) {
   const [errorFoto, setErrorFoto] = useState(false);
   const [errorBandera, setErrorBandera] = useState(false);
+  const [errorEscudo, setErrorEscudo] = useState(false);
 
   const nivel = nivelDe(jugador.media);
   const [colorA, colorB] = GRADIENTES[nivel];
@@ -41,6 +42,7 @@ export default function CartaJugador({ jugador }) {
   const mostrarFoto = jugador.fotoUrl && !errorFoto;
   const urlBandera = bandeUrl(jugador.nacionalidad);
   const mostrarBandera = urlBandera && !errorBandera;
+  const mostrarEscudo = jugador.escudoUrl && !errorEscudo;
 
   return (
     <svg
@@ -99,7 +101,7 @@ export default function CartaJugador({ jugador }) {
         {jugador.media ?? '—'}
       </text>
       <text x="26" y="92" className="carta-posicion">
-        JUG
+        {jugador.posicion || '—'}
       </text>
 
       {/* Bandera, debajo de la posición */}
@@ -114,13 +116,17 @@ export default function CartaJugador({ jugador }) {
         />
       )}
 
-      {/* Club, debajo de la bandera */}
-      {jugador.equipo && (
-        <text x="26" y="142" className="carta-club">
-          {jugador.equipo.length > 14
-            ? jugador.equipo.slice(0, 13) + '…'
-            : jugador.equipo}
-        </text>
+      {/* Escudo del club, debajo de la bandera */}
+      {mostrarEscudo && (
+        <image
+          href={jugador.escudoUrl}
+          x="26"
+          y="128"
+          width="28"
+          height="28"
+          preserveAspectRatio="xMidYMid meet"
+          onError={() => setErrorEscudo(true)}
+        />
       )}
     </svg>
   );

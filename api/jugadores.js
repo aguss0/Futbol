@@ -21,7 +21,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PATCH') {
-      const { id, activo, media, fotoUrl, equipo, nacionalidad } = req.body || {};
+      const { id, activo, media, fotoUrl, equipo, escudoUrl, posicion, nacionalidad } =
+        req.body || {};
       if (typeof id !== 'number') {
         return res.status(400).json({ error: 'Falta id de jugador' });
       }
@@ -41,14 +42,21 @@ export default async function handler(req, res) {
           data.media = n;
         }
       }
-      if (fotoUrl !== undefined) {
-        data.fotoUrl = fotoUrl ? fotoUrl.trim() : null;
-      }
-      if (equipo !== undefined) {
-        data.equipo = equipo ? equipo.trim() : null;
-      }
+      if (fotoUrl !== undefined) data.fotoUrl = fotoUrl ? fotoUrl.trim() : null;
+      if (equipo !== undefined) data.equipo = equipo ? equipo.trim() : null;
+      if (escudoUrl !== undefined) data.escudoUrl = escudoUrl ? escudoUrl.trim() : null;
       if (nacionalidad !== undefined) {
         data.nacionalidad = nacionalidad ? nacionalidad.trim().toUpperCase() : null;
+      }
+      if (posicion !== undefined) {
+        const validas = [
+          'POR', 'LI', 'DFC', 'LD', 'CAI', 'CAD', 'MCD', 'MI', 'MC', 'MD',
+          'MCO', 'EI', 'ED', 'SD', 'DC',
+        ];
+        if (posicion && !validas.includes(posicion)) {
+          return res.status(400).json({ error: 'Posición inválida' });
+        }
+        data.posicion = posicion || null;
       }
 
       const jugador = await prisma.jugador.update({

@@ -1,31 +1,54 @@
-import { useEffect, useState } from 'react';
-import { obtenerPaises } from '../lib/paises.js';
+import { useRef, useState } from 'react';
+import { PAISES } from '../lib/paises.js';
+import { POSICIONES_JUGADOR } from '../lib/posiciones.js';
+import { subirFoto } from '../lib/api.js';
 
-export default function EquipoNacionalidadInput({ equipo, nacionalidad, onGuardar }) {
+export default function EquipoNacionalidadInput({
+  equipo,
+  escudoUrl,
+  posicion,
+  nacionalidad,
+  onGuardar,
+}) {
   const [editando, setEditando] = useState(false);
   const [valorEquipo, setValorEquipo] = useState(equipo || '');
+  const [valorEscudoUrl, setValorEscudoUrl] = useState(escudoUrl || '');
+  const [valorPosicion, setValorPosicion] = useState(posicion || '');
   const [valorNacionalidad, setValorNacionalidad] = useState(nacionalidad || '');
   const [guardando, setGuardando] = useState(false);
-  const [paises, setPaises] = useState(null);
-  const [errorPaises, setErrorPaises] = useState('');
+  const [subiendoEscudo, setSubiendoEscudo] = useState(false);
+  const [error, setError] = useState('');
+  const inputEscudoRef = useRef(null);
 
-  useEffect(() => {
-    if (!editando || paises) return;
-    obtenerPaises()
-      .then(setPaises)
-      .catch(() => setErrorPaises('No se pudo cargar la lista de países.'));
-  }, [editando, paises]);
-
-  async function confirmar() {
-    const eq = valorEquipo.trim();
-    const nac = valorNacionalidad || null;
-    if (eq === (equipo || '') && nac === (nacionalidad || null)) {
-      setEditando(false);
+  async function handleEscudo(e) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Elegí un archivo de imagen para el escudo.');
       return;
     }
+    setError('');
+    setSubiendoEscudo(true);
+    try {
+      const url = await subirFoto(file);
+      setValorEscudoUrl(url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubiendoEscudo(false);
+    }
+  }
+
+  async function confirmar() {
     setGuardando(true);
     try {
-      await onGuardar({ equipo: eq || null, nacionalidad: nac });
+      await onGuardar({
+        equipo: valorEquipo.trim() || null,
+        escudoUrl: valorEscudoUrl || null,
+        posicion: valorPosicion || null,
+        nacionalidad: valorNacionalidad || null,
+      });
     } finally {
       setGuardando(false);
       setEditando(false);
@@ -45,32 +68,68 @@ export default function EquipoNacionalidadInput({ equipo, nacionalidad, onGuarda
             onChange={(e) => setValorEquipo(e.target.value)}
             autoFocus
           />
-          <label>Nacionalidad</label>
-          {errorPaises ? (
-            <p className="mensaje-error" style={{ marginTop: 0 }}>
-              {errorPaises}
-            </p>
-          ) : (
-            <select
-              value={valorNacionalidad}
-              disabled={guardando || !paises}
-              onChange={(e) => setValorNacionalidad(e.target.value)}
+
+          <label>Escudo del club</label>
+          <div className="escudo-fila">
+            {valorEscudoUrl && (
+              <img src={valorEscudoUrl} alt="" className="escudo-preview" />
+            )}
+            <button
+              type="button"
+              className="btn btn-secundario btn-chico"
+              onClick={() => inputEscudoRef.current?.click()}
+              disabled={guardando || subiendoEscudo}
             >
-              <option value="">
-                {paises ? 'Sin definir' : 'Cargando países…'}
+              {subiendoEscudo
+                ? 'Subiendo…'
+                : valorEscudoUrl
+                  ? 'Cambiar'
+                  : 'Subir escudo'}
+            </button>
+            <input
+              ref={inputEscudoRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleEscudo}
+            />
+          </div>
+
+          <label>Posición</label>
+          <select
+            value={valorPosicion}
+            disabled={guardando}
+            onChange={(e) => setValorPosicion(e.target.value)}
+          >
+            <option value="">Sin definir</option>
+            {POSICIONES_JUGADOR.map((p) => (
+              <option key={p.code} value={p.code}>
+                {p.label}
               </option>
-              {paises?.map((p) => (
-                <option key={p.code} value={p.code}>
-                  {p.nombre}
-                </option>
-              ))}
-            </select>
-          )}
+            ))}
+          </select>
+
+          <label>Nacionalidad</label>
+          <select
+            value={valorNacionalidad}
+            disabled={guardando}
+            onChange={(e) => setValorNacionalidad(e.target.value)}
+          >
+            <option value="">Sin definir</option>
+            {PAISES.map((p) => (
+              <option key={p.code} value={p.code}>
+                {p.nombre}
+              </option>
+            ))}
+          </select>
+
+          {error && <p className="mensaje-error">{error}</p>}
+
           <button
             type="button"
             className="btn btn-chico"
             onClick={confirmar}
-            disabled={guardando}
+            disabled={guardando || subiendoEscudo}
           >
             {guardando ? 'Guardando…' : 'Guardar'}
           </button>
@@ -84,7 +143,7 @@ export default function EquipoNacionalidadInput({ equipo, nacionalidad, onGuarda
       type="button"
       className="foto-badge"
       onClick={() => setEditando(true)}
-      title="Club y nacionalidad"
+      title="Club, posición y nacionalidad"
     >
       🏳️
     </button>
