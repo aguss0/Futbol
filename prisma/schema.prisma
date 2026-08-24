@@ -8,12 +8,14 @@ datasource db {
 }
 
 model Jugador {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  activo    Boolean  @default(true)
-  media     Int?
-  fotoUrl   String?
-  createdAt DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  activo       Boolean  @default(true)
+  media        Int?
+  fotoUrl      String?
+  equipo       String?
+  nacionalidad String?  // código ISO de 2 letras, ej: "AR", "BR", "ES"
+  createdAt    DateTime @default(now())
 
   participaciones ParticipacionPartido[]
 }

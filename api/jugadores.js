@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PATCH') {
-      const { id, activo, media, fotoUrl } = req.body || {};
+      const { id, activo, media, fotoUrl, equipo, nacionalidad } = req.body || {};
       if (typeof id !== 'number') {
         return res.status(400).json({ error: 'Falta id de jugador' });
       }
@@ -43,6 +43,12 @@ export default async function handler(req, res) {
       }
       if (fotoUrl !== undefined) {
         data.fotoUrl = fotoUrl ? fotoUrl.trim() : null;
+      }
+      if (equipo !== undefined) {
+        data.equipo = equipo ? equipo.trim() : null;
+      }
+      if (nacionalidad !== undefined) {
+        data.nacionalidad = nacionalidad ? nacionalidad.trim().toUpperCase() : null;
       }
 
       const jugador = await prisma.jugador.update({

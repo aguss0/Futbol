@@ -8,6 +8,7 @@ import {
 import { calcularStats } from '../lib/stats.js';
 import MediaBadge from './MediaBadge.jsx';
 import FotoInput from './FotoInput.jsx';
+import EquipoNacionalidadInput from './EquipoNacionalidadInput.jsx';
 import UltimosResultados from './UltimosResultados.jsx';
 import CartaJugador from './CartaJugador.jsx';
 
@@ -75,6 +76,15 @@ export default function Jugadores() {
     }
   }
 
+  async function handleEquipoNacionalidad(j, { equipo, nacionalidad }) {
+    try {
+      await actualizarJugador(j.id, { equipo, nacionalidad });
+      cargarJugadores();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   return (
     <div className="card">
       <form className="form-inline" onSubmit={handleSubmit}>
@@ -132,6 +142,11 @@ export default function Jugadores() {
                   <FotoInput
                     fotoUrl={j.fotoUrl}
                     onGuardar={(url) => handleFoto(j, url)}
+                  />
+                  <EquipoNacionalidadInput
+                    equipo={j.equipo}
+                    nacionalidad={j.nacionalidad}
+                    onGuardar={(datos) => handleEquipoNacionalidad(j, datos)}
                   />
                   <MediaBadge
                     media={j.media}

@@ -1107,3 +1107,62 @@ button:focus-visible {
   margin-top: 44px;
   white-space: nowrap;
 }
+
+.carta-club {
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--tinta);
+}
+
+/* --- Panel de club / nacionalidad --- */
+
+.equipo-nac-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 40, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+  padding: 16px;
+}
+
+.equipo-nac-panel {
+  background: white;
+  border-radius: 6px;
+  padding: 18px;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 0 8px 24px rgba(16, 40, 31, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.equipo-nac-panel label {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-top: 10px;
+}
+
+.equipo-nac-panel label:first-child {
+  margin-top: 0;
+}
+
+.equipo-nac-panel input,
+.equipo-nac-panel select {
+  padding: 9px 10px;
+  border: 1px solid var(--linea);
+  border-radius: 3px;
+  font-size: 14px;
+  background: var(--tiza);
+  color: var(--tinta);
+}
+
+.equipo-nac-panel .btn {
+  margin-top: 16px;
+}
