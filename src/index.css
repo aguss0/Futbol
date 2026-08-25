@@ -1117,12 +1117,18 @@ button:focus-visible {
   max-width: 100%;
 }
 
+.carta-html-wrap {
+  width: 220px;
+  max-width: 100%;
+}
+
 .carta-html {
   position: relative;
-  width: 100%;
-  aspect-ratio: 220 / 310;
+  width: 220px;
+  height: 310px;
+  max-width: 100%;
   overflow: hidden;
-  background: linear-gradient(160deg, #cfd8d3, #a7b3ac); /* fallback: sin-media */
+  background: linear-gradient(160deg, #cfd8d3, #a7b3ac);
 }
 
 .carta-html-bronce {
