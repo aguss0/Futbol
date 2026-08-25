@@ -47,8 +47,12 @@ export default function CartaJugador({ jugador }) {
   const mostrarBandera = urlBandera && !errorBandera;
   const mostrarEscudo = jugador.escudoUrl && !errorEscudo;
 
+  const nombreCorto =
+    jugador.nombre.length > 20
+      ? jugador.nombre.slice(0, 18) + '…'
+      : jugador.nombre;
   const nombreFontSize =
-    jugador.nombre.length > 14 ? 15 : jugador.nombre.length > 10 ? 17 : 19;
+    nombreCorto.length > 16 ? 13 : nombreCorto.length > 12 ? 16 : 19;
 
   return (
     <svg
@@ -69,15 +73,17 @@ export default function CartaJugador({ jugador }) {
       {/* Fondo dorado */}
       <path d={SHIELD_PATH} fill={`url(#${gradId})`} />
 
-      {/* Foto del jugador, en la mitad inferior del escudo (zona ancha) */}
+      {/* Foto del jugador, cubriendo todo el escudo. La columna de datos y
+          la franja del nombre se dibujan después, así que quedan siempre
+          por encima y legibles aunque la foto pase por detrás. */}
       {jugador.fotoUrl && (
         <g clipPath={`url(#${clipId})`} style={{ display: mostrarFoto ? 'block' : 'none' }}>
           <image
             href={jugador.fotoUrl}
             x="10"
-            y="150"
+            y="0"
             width="200"
-            height="150"
+            height="300"
             preserveAspectRatio="xMidYMin slice"
             onError={() => setErrorFoto(true)}
           />
@@ -100,6 +106,12 @@ export default function CartaJugador({ jugador }) {
             {iniciales(jugador.nombre)}
           </text>
         </>
+      )}
+
+      {/* Fondo suave detrás de la columna de datos, para que se lea bien
+          aunque la foto pase por detrás */}
+      {mostrarFoto && (
+        <rect x="0" y="0" width="95" height="165" fill={`url(#${gradId})`} opacity="0.55" />
       )}
 
       {/* Columna de datos: media, posición, bandera y escudo */}
@@ -142,7 +154,7 @@ export default function CartaJugador({ jugador }) {
         className="carta-nombre"
         style={{ fontSize: `${nombreFontSize}px` }}
       >
-        {jugador.nombre}
+        {nombreCorto}
       </text>
     </svg>
   );
