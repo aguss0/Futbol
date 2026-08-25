@@ -1144,11 +1144,14 @@ button:focus-visible {
 
 .carta-html-foto {
   position: absolute;
-  inset: 0;
+  top: -25%;
+  right: -15%;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 15%;
+  transform: scale(1);
+  transform-origin: center top;
 }
 
 .carta-html-avatar {
