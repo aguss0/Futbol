@@ -18,12 +18,10 @@ function iniciales(nombre) {
     .join('');
 }
 
-// Misma curva que usábamos en SVG (escudo ancho hasta el 80% de la altura,
-// angostándose recién al final), pero en fracciones 0–1 para que funcione
-// con clip-path en cualquier tamaño de contenedor.
-const CLIP_ID_BASE = 'carta-clip';
-const SHIELD_PATH_FRACCION =
-  'M0.045,0 H0.955 V0.806 C0.955,0.887 0.75,0.935 0.5,0.968 C0.25,0.935 0.045,0.887 0.045,0.806 Z';
+// Forma de escudo en coordenadas absolutas (asume un contenedor de 220x310px,
+// que es el tamaño fijo con el que siempre se muestra la carta).
+const SHIELD_CLIP =
+  'path("M10,0 H210 V250 C210,275 165,290 110,300 C55,290 10,275 10,250 Z")';
 
 export default function CartaJugador({ jugador }) {
   const [errorFoto, setErrorFoto] = useState(false);
@@ -31,7 +29,6 @@ export default function CartaJugador({ jugador }) {
   const [errorEscudo, setErrorEscudo] = useState(false);
 
   const nivel = nivelDe(jugador.media);
-  const clipId = `${CLIP_ID_BASE}-${jugador.id}`;
 
   const mostrarFoto = jugador.fotoUrl && !errorFoto;
   const urlBandera = bandeUrl(jugador.nacionalidad);
@@ -40,19 +37,9 @@ export default function CartaJugador({ jugador }) {
 
   return (
     <div className="carta-html-wrap">
-      {/* SVG invisible, solo para definir la forma de escudo que se usa
-          como clip-path sobre el div de abajo. No dibuja nada visible. */}
-      <svg width="0" height="0" style={{ position: 'absolute' }}>
-        <defs>
-          <clipPath id={clipId} clipPathUnits="objectBoundingBox">
-            <path d={SHIELD_PATH_FRACCION} />
-          </clipPath>
-        </defs>
-      </svg>
-
       <div
         className={`carta-html carta-html-${nivel}`}
-        style={{ clipPath: `url(#${clipId})` }}
+        style={{ clipPath: SHIELD_CLIP }}
       >
         {mostrarFoto ? (
           <img
@@ -88,7 +75,7 @@ export default function CartaJugador({ jugador }) {
           )}
         </div>
 
-        <div className="carta-html-nombre-franja">
+        <div className={`carta-html-nombre-franja carta-html-${nivel}`}>
           <span className="carta-html-nombre">{jugador.nombre}</span>
         </div>
       </div>

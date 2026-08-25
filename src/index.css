@@ -1227,12 +1227,29 @@ button:focus-visible {
   right: 0;
   top: 68%;
   height: 15%;
-  background: rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(1px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 12%;
+}
+
+/* La franja del nombre usa el mismo degradé opaco que el resto de la
+   carta (según el nivel de media), en vez de un color translúcido que
+   deja ver la foto detrás. */
+.carta-html-nombre-franja.carta-html-sin-media {
+  background: linear-gradient(160deg, #cfd8d3, #a7b3ac);
+}
+.carta-html-nombre-franja.carta-html-bronce {
+  background: linear-gradient(160deg, #b08d57, #8a6a3d);
+}
+.carta-html-nombre-franja.carta-html-plata {
+  background: linear-gradient(160deg, #b8c2c9, #8a97a1);
+}
+.carta-html-nombre-franja.carta-html-oro {
+  background: linear-gradient(160deg, #f0c766, #e8a63d);
+}
+.carta-html-nombre-franja.carta-html-especial {
+  background: linear-gradient(160deg, #a97fd1, #6f43a0);
 }
 
 .carta-html-nombre {
@@ -1245,7 +1262,11 @@ button:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
+  /* Clave: sin esto, el texto empuja el contenedor en vez de recortarse
+     con "...", que es justo el bug que tenías. */
+  min-width: 0;
+  width: 100%;
+  text-align: center;
 }
 
 .carta-overlay {
