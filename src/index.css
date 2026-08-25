@@ -1117,11 +1117,6 @@ button:focus-visible {
   max-width: 100%;
 }
 
-.carta-html-wrap {
-  width: 220px;
-  max-width: 100%;
-}
-
 .carta-html {
   position: relative;
   width: 220px;
@@ -1251,4 +1246,35 @@ button:focus-visible {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.carta-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 40, 31, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 20px;
+}
+
+.carta-contenedor {
+  width: 220px;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.4));
+}
+
+.carta-cerrar {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: var(--cancha-oscuro);
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
