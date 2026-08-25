@@ -9,14 +9,6 @@ function nivelDe(media) {
   return 'bronce';
 }
 
-const GRADIENTES = {
-  'sin-media': ['#cfd8d3', '#a7b3ac'],
-  bronce: ['#b08d57', '#8a6a3d'],
-  plata: ['#b8c2c9', '#8a97a1'],
-  oro: ['#f0c766', '#e8a63d'],
-  especial: ['#a97fd1', '#6f43a0'],
-};
-
 function iniciales(nombre) {
   return nombre
     .trim()
@@ -26,11 +18,12 @@ function iniciales(nombre) {
     .join('');
 }
 
-// El "cuerpo" del escudo se mantiene ancho hasta y=250, y recién ahí se
-// angosta hasta la punta en y=300 — así la punta queda chica (como en las
-// cartas reales) y no se come el espacio del nombre ni de la foto.
-const SHIELD_PATH =
-  'M10,0 H210 V250 C210,275 165,290 110,300 C55,290 10,275 10,250 Z';
+// Misma curva que usábamos en SVG (escudo ancho hasta el 80% de la altura,
+// angostándose recién al final), pero en fracciones 0–1 para que funcione
+// con clip-path en cualquier tamaño de contenedor.
+const CLIP_ID_BASE = 'carta-clip';
+const SHIELD_PATH_FRACCION =
+  'M0.045,0 H0.955 V0.806 C0.955,0.887 0.75,0.935 0.5,0.968 C0.25,0.935 0.045,0.887 0.045,0.806 Z';
 
 export default function CartaJugador({ jugador }) {
   const [errorFoto, setErrorFoto] = useState(false);
@@ -38,124 +31,67 @@ export default function CartaJugador({ jugador }) {
   const [errorEscudo, setErrorEscudo] = useState(false);
 
   const nivel = nivelDe(jugador.media);
-  const [colorA, colorB] = GRADIENTES[nivel];
-  const gradId = `carta-grad-${jugador.id}`;
-  const clipId = `carta-clip-${jugador.id}`;
+  const clipId = `${CLIP_ID_BASE}-${jugador.id}`;
 
   const mostrarFoto = jugador.fotoUrl && !errorFoto;
   const urlBandera = bandeUrl(jugador.nacionalidad);
   const mostrarBandera = urlBandera && !errorBandera;
   const mostrarEscudo = jugador.escudoUrl && !errorEscudo;
 
-  const nombreCorto =
-    jugador.nombre.length > 20
-      ? jugador.nombre.slice(0, 18) + '…'
-      : jugador.nombre;
-  const nombreFontSize =
-    nombreCorto.length > 16 ? 13 : nombreCorto.length > 12 ? 16 : 19;
-
   return (
-    <svg
-      className="carta-svg"
-      viewBox="0 0 220 310"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={colorA} />
-          <stop offset="100%" stopColor={colorB} />
-        </linearGradient>
-        <clipPath id={clipId}>
-          <path d={SHIELD_PATH} />
-        </clipPath>
-      </defs>
+    <div className="carta-html-wrap">
+      {/* SVG invisible, solo para definir la forma de escudo que se usa
+          como clip-path sobre el div de abajo. No dibuja nada visible. */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="objectBoundingBox">
+            <path d={SHIELD_PATH_FRACCION} />
+          </clipPath>
+        </defs>
+      </svg>
 
-      {/* Fondo dorado */}
-      <path d={SHIELD_PATH} fill={`url(#${gradId})`} />
-
-      {/* Foto del jugador, cubriendo todo el escudo. La columna de datos y
-          la franja del nombre se dibujan después, así que quedan siempre
-          por encima y legibles aunque la foto pase por detrás. */}
-      {jugador.fotoUrl && (
-        <g clipPath={`url(#${clipId})`} style={{ display: mostrarFoto ? 'block' : 'none' }}>
-          <image
-            href={jugador.fotoUrl}
-            x="10"
-            y="0"
-            width="200"
-            height="300"
-            preserveAspectRatio="xMidYMin slice"
+      <div
+        className={`carta-html carta-html-${nivel}`}
+        style={{ clipPath: `url(#${clipId})` }}
+      >
+        {mostrarFoto ? (
+          <img
+            src={jugador.fotoUrl}
+            alt=""
+            className="carta-html-foto"
             onError={() => setErrorFoto(true)}
           />
-        </g>
-      )}
+        ) : (
+          <div className="carta-html-avatar">
+            <span>{iniciales(jugador.nombre)}</span>
+          </div>
+        )}
 
-      {/* Borde del escudo, arriba de la foto */}
-      <path
-        d={SHIELD_PATH}
-        fill="none"
-        stroke="rgba(255,255,255,0.55)"
-        strokeWidth="2"
-      />
+        <div className="carta-html-datos">
+          <span className="carta-html-media">{jugador.media ?? '—'}</span>
+          <span className="carta-html-posicion">{jugador.posicion || '—'}</span>
+          {mostrarBandera && (
+            <img
+              src={urlBandera}
+              alt=""
+              className="carta-html-bandera"
+              onError={() => setErrorBandera(true)}
+            />
+          )}
+          {mostrarEscudo && (
+            <img
+              src={jugador.escudoUrl}
+              alt=""
+              className="carta-html-escudo"
+              onError={() => setErrorEscudo(true)}
+            />
+          )}
+        </div>
 
-      {/* Avatar con iniciales: fallback si no hay foto, o si la foto rompió */}
-      {!mostrarFoto && (
-        <>
-          <circle cx="110" cy="190" r="58" className="carta-avatar-fondo" />
-          <text x="110" y="208" textAnchor="middle" className="carta-avatar-texto">
-            {iniciales(jugador.nombre)}
-          </text>
-        </>
-      )}
-
-      {/* Fondo suave detrás de la columna de datos, para que se lea bien
-          aunque la foto pase por detrás */}
-      {mostrarFoto && (
-        <rect x="0" y="0" width="95" height="165" fill={`url(#${gradId})`} opacity="0.55" />
-      )}
-
-      {/* Columna de datos: media, posición, bandera y escudo */}
-      <text x="26" y="62" className="carta-media">
-        {jugador.media ?? '—'}
-      </text>
-      <text x="26" y="85" className="carta-posicion">
-        {jugador.posicion || '—'}
-      </text>
-
-      {mostrarBandera && (
-        <image
-          href={urlBandera}
-          x="24"
-          y="95"
-          width="34"
-          height="24"
-          onError={() => setErrorBandera(true)}
-        />
-      )}
-
-      {mostrarEscudo && (
-        <image
-          href={jugador.escudoUrl}
-          x="25"
-          y="127"
-          width="32"
-          height="32"
-          preserveAspectRatio="xMidYMid meet"
-          onError={() => setErrorEscudo(true)}
-        />
-      )}
-
-      {/* Franja para el nombre, en la zona ancha (antes de la punta) */}
-      <rect x="0" y="212" width="220" height="46" fill={`url(#${gradId})`} opacity="0.93" />
-      <text
-        x="110"
-        y="242"
-        textAnchor="middle"
-        className="carta-nombre"
-        style={{ fontSize: `${nombreFontSize}px` }}
-      >
-        {nombreCorto}
-      </text>
-    </svg>
+        <div className="carta-html-nombre-franja">
+          <span className="carta-html-nombre">{jugador.nombre}</span>
+        </div>
+      </div>
+    </div>
   );
 }

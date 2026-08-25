@@ -1002,72 +1002,6 @@ button:focus-visible {
   }
 }
 
-/* --- Carta estilo FIFA --- */
-
-.carta-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(16, 40, 31, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-  padding: 20px;
-}
-
-.carta-contenedor {
-  width: 220px;
-  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.4));
-}
-
-.carta-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.carta-media {
-  font-family: var(--display);
-  font-size: 42px;
-  font-weight: 700;
-  fill: var(--tinta);
-}
-
-.carta-posicion {
-  font-family: var(--display);
-  font-size: 15px;
-  letter-spacing: 1px;
-  fill: rgba(22, 36, 28, 0.7);
-}
-
-.carta-avatar-fondo {
-  fill: rgba(255, 255, 255, 0.35);
-  stroke: rgba(255, 255, 255, 0.6);
-  stroke-width: 2;
-}
-
-.carta-avatar-texto {
-  font-family: var(--display);
-  font-size: 34px;
-  font-weight: 600;
-  fill: var(--tinta);
-}
-
-.carta-cerrar {
-  position: absolute;
-  top: -14px;
-  right: -14px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: white;
-  color: var(--cancha-oscuro);
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-}
-
 .jugador-row .nombre {
   cursor: pointer;
 }
@@ -1160,9 +1094,6 @@ button:focus-visible {
   margin-top: 16px;
 }
 
-.carta-svg image {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
-}
 .escudo-fila {
   display: flex;
   align-items: center;
@@ -1179,11 +1110,139 @@ button:focus-visible {
   padding: 2px;
 }
 
-.carta-nombre {
+/* --- Carta estilo FIFA (HTML/CSS) --- */
+
+.carta-html-wrap {
+  width: 220px;
+  max-width: 100%;
+}
+
+.carta-html {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 220 / 310;
+  overflow: hidden;
+  background: linear-gradient(160deg, #cfd8d3, #a7b3ac); /* fallback: sin-media */
+}
+
+.carta-html-bronce {
+  background: linear-gradient(160deg, #b08d57, #8a6a3d);
+}
+
+.carta-html-plata {
+  background: linear-gradient(160deg, #b8c2c9, #8a97a1);
+}
+
+.carta-html-oro {
+  background: linear-gradient(160deg, #f0c766, #e8a63d);
+}
+
+.carta-html-especial {
+  background: linear-gradient(160deg, #a97fd1, #6f43a0);
+}
+
+.carta-html-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.carta-html-avatar {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carta-html-avatar span {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--display);
-  font-size: 19px;
+  font-size: 34px;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  fill: var(--tinta);
+  color: var(--tinta);
+}
+
+.carta-html-datos {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64%;
+  height: 52%;
+  padding: 18px 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.14),
+    rgba(0, 0, 0, 0) 75%
+  );
+}
+
+.carta-html-media {
+  font-family: var(--display);
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--tinta);
+  line-height: 1;
+}
+
+.carta-html-posicion {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: rgba(22, 36, 28, 0.75);
+  margin-top: -4px;
+}
+
+.carta-html-bandera {
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.carta-html-escudo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.carta-html-nombre-franja {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 68%;
+  height: 15%;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(1px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12%;
+}
+
+.carta-html-nombre {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--tinta);
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
