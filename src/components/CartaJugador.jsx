@@ -26,8 +26,11 @@ function iniciales(nombre) {
     .join('');
 }
 
+// El "cuerpo" del escudo se mantiene ancho hasta y=250, y recién ahí se
+// angosta hasta la punta en y=300 — así la punta queda chica (como en las
+// cartas reales) y no se come el espacio del nombre ni de la foto.
 const SHIELD_PATH =
-  'M10,0 H210 V190 C210,240 165,260 110,300 C55,260 10,240 10,190 Z';
+  'M10,0 H210 V250 C210,275 165,290 110,300 C55,290 10,275 10,250 Z';
 
 export default function CartaJugador({ jugador }) {
   const [errorFoto, setErrorFoto] = useState(false);
@@ -43,6 +46,9 @@ export default function CartaJugador({ jugador }) {
   const urlBandera = bandeUrl(jugador.nacionalidad);
   const mostrarBandera = urlBandera && !errorBandera;
   const mostrarEscudo = jugador.escudoUrl && !errorEscudo;
+
+  const nombreFontSize =
+    jugador.nombre.length > 14 ? 15 : jugador.nombre.length > 10 ? 17 : 19;
 
   return (
     <svg
@@ -60,24 +66,21 @@ export default function CartaJugador({ jugador }) {
         </clipPath>
       </defs>
 
-      {/* Fondo dorado (queda visible arriba, donde va la columna de datos) */}
+      {/* Fondo dorado */}
       <path d={SHIELD_PATH} fill={`url(#${gradId})`} />
 
-      {/* Foto del jugador: arranca más abajo, para no pisar la columna de
-          datos (media/posición/bandera/escudo), y una franja translúcida
-          al pie para que el nombre se lea bien encima. */}
+      {/* Foto del jugador, en la mitad inferior del escudo (zona ancha) */}
       {jugador.fotoUrl && (
         <g clipPath={`url(#${clipId})`} style={{ display: mostrarFoto ? 'block' : 'none' }}>
           <image
             href={jugador.fotoUrl}
             x="10"
-            y="165"
+            y="150"
             width="200"
-            height="135"
+            height="150"
             preserveAspectRatio="xMidYMin slice"
             onError={() => setErrorFoto(true)}
           />
-          <rect x="0" y="256" width="220" height="54" fill={`url(#${gradId})`} opacity="0.93" />
         </g>
       )}
 
@@ -99,8 +102,7 @@ export default function CartaJugador({ jugador }) {
         </>
       )}
 
-      {/* Columna de datos: media, posición, bandera y escudo, con
-          espaciado parejo, siempre alineados a la izquierda. */}
+      {/* Columna de datos: media, posición, bandera y escudo */}
       <text x="26" y="62" className="carta-media">
         {jugador.media ?? '—'}
       </text>
@@ -131,8 +133,15 @@ export default function CartaJugador({ jugador }) {
         />
       )}
 
-      {/* Nombre, siempre abajo, centrado */}
-      <text x="110" y="286" textAnchor="middle" className="carta-nombre">
+      {/* Franja para el nombre, en la zona ancha (antes de la punta) */}
+      <rect x="0" y="212" width="220" height="46" fill={`url(#${gradId})`} opacity="0.93" />
+      <text
+        x="110"
+        y="242"
+        textAnchor="middle"
+        className="carta-nombre"
+        style={{ fontSize: `${nombreFontSize}px` }}
+      >
         {jugador.nombre}
       </text>
     </svg>
