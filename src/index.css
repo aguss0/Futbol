@@ -1378,11 +1378,23 @@ button:focus-visible {
   margin-top: 24px;
 }
 
+.sorteo-bloque {
+  margin-bottom: 28px;
+}
+
+.sorteo-bloque-titulo {
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ambar);
+  margin: 0 0 10px;
+}
+
 .sorteo-equipos-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-bottom: 16px;
 }
 
 .sorteo-equipo {
@@ -1391,7 +1403,7 @@ button:focus-visible {
   padding: 16px;
 }
 
-.sorteo-equipo h3 {
+.sorteo-equipo h4 {
   font-family: var(--display);
   font-size: 14px;
   letter-spacing: 0.5px;

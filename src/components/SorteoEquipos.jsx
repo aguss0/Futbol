@@ -1,12 +1,45 @@
 import { useEffect, useState } from 'react';
 import { getJugadores, getPartidos } from '../lib/api.js';
-import { balancearEquipos } from '../lib/sorteo.js';
+import { sortearAmbosCriterios, CANTIDADES_VALIDAS } from '../lib/sorteo.js';
+
+function BloqueResultado({ titulo, resultado, sufijo }) {
+  return (
+    <div className="sorteo-bloque">
+      <h3 className="sorteo-bloque-titulo">{titulo}</h3>
+      <div className="sorteo-equipos-grid">
+        <div className="sorteo-equipo">
+          <h4>Equipo A</h4>
+          <p className="sorteo-promedio">
+            Promedio: {resultado.promedioA.toFixed(1)}
+            {sufijo}
+          </p>
+          <ul>
+            {resultado.equipoA.map((j) => (
+              <li key={j.id}>{j.nombre}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="sorteo-equipo">
+          <h4>Equipo B</h4>
+          <p className="sorteo-promedio">
+            Promedio: {resultado.promedioB.toFixed(1)}
+            {sufijo}
+          </p>
+          <ul>
+            {resultado.equipoB.map((j) => (
+              <li key={j.id}>{j.nombre}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function SorteoEquipos() {
   const [jugadores, setJugadores] = useState(null);
   const [partidos, setPartidos] = useState(null);
   const [seleccionados, setSeleccionados] = useState(new Set());
-  const [criterio, setCriterio] = useState('media');
   const [resultado, setResultado] = useState(null);
   const [error, setError] = useState('');
 
@@ -32,11 +65,15 @@ export default function SorteoEquipos() {
   function handleSortear() {
     setError('');
     const elegidos = jugadores.filter((j) => seleccionados.has(j.id));
-    if (elegidos.length < 2) {
-      setError('Elegí al menos 2 jugadores.');
+
+    if (!CANTIDADES_VALIDAS.includes(elegidos.length)) {
+      setError(
+        `Elegí exactamente ${CANTIDADES_VALIDAS.join(', ')} jugadores (para armar 5 vs 5, 6 vs 6 o 7 vs 7). Ahora mismo elegiste ${elegidos.length}.`
+      );
       return;
     }
-    setResultado(balancearEquipos(elegidos, partidos, criterio));
+
+    setResultado(sortearAmbosCriterios(elegidos, partidos));
   }
 
   if (!jugadores || !partidos) return <p>Cargando jugadores…</p>;
@@ -46,21 +83,10 @@ export default function SorteoEquipos() {
   return (
     <div className="card">
       <div className="campo">
-        <label>Criterio de balance</label>
-        <select
-          value={criterio}
-          onChange={(e) => {
-            setCriterio(e.target.value);
-            setResultado(null);
-          }}
-        >
-          <option value="media">Balancear por media</option>
-          <option value="winrate">Balancear por winrate</option>
-        </select>
-      </div>
-
-      <div className="campo">
-        <label>Jugadores disponibles ({seleccionados.size} elegidos)</label>
+        <label>
+          Jugadores disponibles ({seleccionados.size} elegidos — tiene que
+          ser 10, 12 o 14)
+        </label>
         {activos.length === 0 ? (
           <div className="vacio">No hay jugadores activos.</div>
         ) : (
@@ -87,34 +113,16 @@ export default function SorteoEquipos() {
 
       {resultado && (
         <div className="sorteo-resultado">
-          <div className="sorteo-equipos-grid">
-            <div className="sorteo-equipo">
-              <h3>Equipo A</h3>
-              <p className="sorteo-promedio">
-                {criterio === 'media' ? 'Media promedio' : 'Winrate promedio'}:{' '}
-                {resultado.promedioA.toFixed(1)}
-                {criterio === 'winrate' ? '%' : ''}
-              </p>
-              <ul>
-                {resultado.equipoA.map((j) => (
-                  <li key={j.id}>{j.nombre}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="sorteo-equipo">
-              <h3>Equipo B</h3>
-              <p className="sorteo-promedio">
-                {criterio === 'media' ? 'Media promedio' : 'Winrate promedio'}:{' '}
-                {resultado.promedioB.toFixed(1)}
-                {criterio === 'winrate' ? '%' : ''}
-              </p>
-              <ul>
-                {resultado.equipoB.map((j) => (
-                  <li key={j.id}>{j.nombre}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <BloqueResultado
+            titulo="Por media"
+            resultado={resultado.porMedia}
+            sufijo=""
+          />
+          <BloqueResultado
+            titulo="Por winrate"
+            resultado={resultado.porWinrate}
+            sufijo="%"
+          />
           <button
             type="button"
             className="btn btn-secundario"
