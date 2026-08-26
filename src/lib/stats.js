@@ -165,7 +165,7 @@ export function calcularMedia(
       factor = clamp(0.4 + (media / 100) * 1.2, 0.4, 1.6);
     }
 
-    media = clamp(media + ajusteCrudo * factor, 1, 99);
+    media = clamp(media + ajusteCrudo * factor, 60, 99);
   });
 
   return Math.round(media);

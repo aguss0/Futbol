@@ -3,11 +3,13 @@ import Inicio from './components/Inicio.jsx';
 import Jugadores from './components/Jugadores.jsx';
 import NuevoPartido from './components/NuevoPartido.jsx';
 import EditarPartido from './components/EditarPartido.jsx';
+import SorteoEquipos from './components/SorteoEquipos.jsx';
 
 const TABS = [
   { id: 'inicio', label: 'Inicio' },
   { id: 'nuevo', label: 'Nuevo partido' },
   { id: 'jugadores', label: 'Jugadores' },
+  { id: 'sorteo', label: 'Sorteo' },
 ];
 
 export default function App() {
@@ -74,6 +76,7 @@ export default function App() {
             />
           )}
           {tab === 'jugadores' && <Jugadores />}
+          {tab === 'sorteo' && <SorteoEquipos />}
         </>
       )}
     </div>

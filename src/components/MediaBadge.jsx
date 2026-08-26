@@ -15,7 +15,7 @@ export default function MediaBadge({ mediaMostrada, mediaInicial, onGuardar }) {
 
   async function confirmar() {
     const n = valor === '' ? null : Number(valor);
-    if (n !== null && (!Number.isInteger(n) || n < 1 || n > 99)) {
+    if (n !== null && (!Number.isInteger(n) || n < 60 || n > 99)) {
       setValor(mediaInicial ?? '');
       setEditando(false);
       return;
@@ -38,7 +38,7 @@ export default function MediaBadge({ mediaMostrada, mediaInicial, onGuardar }) {
       <input
         className="media-input"
         type="number"
-        min="1"
+        min="60"
         max="99"
         autoFocus
         value={valor}

@@ -37,10 +37,10 @@ export default async function handler(req, res) {
         data.mediaReinicioFecha = null;
       } else {
         const n = Number(media);
-        if (!Number.isInteger(n) || n < 1 || n > 99) {
+        if (!Number.isInteger(n) || n < 60 || n > 99) {
           return res
             .status(400)
-            .json({ error: 'La media debe ser un número entre 1 y 99' });
+            .json({ error: 'La media debe ser un número entre 60 y 99' });
         }
         data.media = n;
         // Es un ajuste manual (excepción): a partir de ahora, solo cuentan

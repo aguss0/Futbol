@@ -1340,3 +1340,90 @@ button:focus-visible {
 .carta-html-azul .carta-html-posicion {
   color: rgba(247, 245, 239, 0.8);
 }
+
+/* --- Sorteo de equipos --- */
+
+.sorteo-lista {
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--linea);
+  border-radius: 4px;
+}
+
+.sorteo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--linea);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sorteo-item:last-child {
+  border-bottom: none;
+}
+
+.sorteo-item:hover {
+  background: var(--tiza);
+}
+
+.sorteo-item input {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sorteo-resultado {
+  margin-top: 24px;
+}
+
+.sorteo-equipos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sorteo-equipo {
+  background: var(--tiza);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.sorteo-equipo h3 {
+  font-family: var(--display);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  color: var(--cancha-oscuro);
+}
+
+.sorteo-promedio {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 0 0 10px;
+}
+
+.sorteo-equipo ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sorteo-equipo li {
+  font-size: 14px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.sorteo-equipo li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 560px) {
+  .sorteo-equipos-grid {
+    grid-template-columns: 1fr;
+  }
+}
