@@ -98,3 +98,18 @@ export async function subirFoto(file) {
   const data = await res.json();
   return data.url;
 }
+
+export async function eliminarJugador(id) {
+  const res = await fetch(`/api/jugadores?id=${id}`, { method: 'DELETE' });
+  if (!res.ok) {
+    let mensaje = 'No se pudo eliminar el jugador';
+    try {
+      const data = await res.json();
+      mensaje = data.error || mensaje;
+    } catch {
+      // sin body
+    }
+    throw new Error(mensaje);
+  }
+  return true;
+}

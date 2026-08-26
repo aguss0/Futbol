@@ -3,6 +3,7 @@ import {
   getJugadores,
   crearJugador,
   actualizarJugador,
+  eliminarJugador,
   getPartidos,
 } from '../lib/api.js';
 import { calcularStats } from '../lib/stats.js';
@@ -52,6 +53,20 @@ export default function Jugadores() {
   async function handleToggleActivo(j) {
     try {
       await actualizarJugador(j.id, { activo: !j.activo });
+      cargarJugadores();
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function handleEliminar(j) {
+    const confirmado = window.confirm(
+      `¿Seguro que querés eliminar a "${j.nombre}"? No se puede deshacer.`
+    );
+    if (!confirmado) return;
+    setError('');
+    try {
+      await eliminarJugador(j.id);
       cargarJugadores();
     } catch (e) {
       setError(e.message);
@@ -144,7 +159,6 @@ export default function Jugadores() {
                     onGuardar={(url) => handleFoto(j, url)}
                   />
                   <EquipoNacionalidadInput
-                    equipo={j.equipo}
                     escudoUrl={j.escudoUrl}
                     posicion={j.posicion}
                     nacionalidad={j.nacionalidad}
@@ -159,6 +173,14 @@ export default function Jugadores() {
                     onClick={() => handleToggleActivo(j)}
                   >
                     {j.activo ? 'Desactivar' : 'Activar'}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secundario btn btn-eliminar"
+                    onClick={() => handleEliminar(j)}
+                    title="Eliminar jugador"
+                  >
+                    ✕
                   </button>
                 </div>
               </div>

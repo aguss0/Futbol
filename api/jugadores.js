@@ -65,8 +65,27 @@ export default async function handler(req, res) {
       });
       return res.status(200).json(jugador);
     }
+    if (req.method === 'DELETE') {
+      const id = Number(req.query?.id);
+      if (!Number.isInteger(id)) {
+        return res.status(400).json({ error: 'Id inválido' });
+      }
 
-    res.setHeader('Allow', ['GET', 'POST', 'PATCH']);
+      const partidosJugados = await prisma.participacionPartido.count({
+        where: { jugadorId: id },
+      });
+      if (partidosJugados > 0) {
+        return res.status(400).json({
+          error:
+            'No se puede eliminar: ya jugó partidos. Usá "Desactivar" en su lugar.',
+        });
+      }
+
+      await prisma.jugador.delete({ where: { id } });
+      return res.status(204).end();
+    }
+
+    res.setHeader('Allow', ['GET', 'POST', 'PATCH', 'DELETE']);
     return res.status(405).json({ error: 'Método no permitido' });
   } catch (err) {
     console.error(err);

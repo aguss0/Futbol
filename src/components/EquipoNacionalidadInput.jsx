@@ -4,14 +4,12 @@ import { POSICIONES_JUGADOR } from '../lib/posiciones.js';
 import { subirFoto } from '../lib/api.js';
 
 export default function EquipoNacionalidadInput({
-  equipo,
   escudoUrl,
   posicion,
   nacionalidad,
   onGuardar,
 }) {
   const [editando, setEditando] = useState(false);
-  const [valorEquipo, setValorEquipo] = useState(equipo || '');
   const [valorEscudoUrl, setValorEscudoUrl] = useState(escudoUrl || '');
   const [valorPosicion, setValorPosicion] = useState(posicion || '');
   const [valorNacionalidad, setValorNacionalidad] = useState(nacionalidad || '');
@@ -44,7 +42,6 @@ export default function EquipoNacionalidadInput({
     setGuardando(true);
     try {
       await onGuardar({
-        equipo: valorEquipo.trim() || null,
         escudoUrl: valorEscudoUrl || null,
         posicion: valorPosicion || null,
         nacionalidad: valorNacionalidad || null,
@@ -59,16 +56,6 @@ export default function EquipoNacionalidadInput({
     return (
       <div className="equipo-nac-overlay" onClick={() => confirmar()}>
         <div className="equipo-nac-panel" onClick={(e) => e.stopPropagation()}>
-          <label>Club / equipo</label>
-          <input
-            type="text"
-            placeholder="Ej: Boca Juniors"
-            value={valorEquipo}
-            disabled={guardando}
-            onChange={(e) => setValorEquipo(e.target.value)}
-            autoFocus
-          />
-
           <label>Escudo del club</label>
           <div className="escudo-fila">
             {valorEscudoUrl && (
@@ -143,7 +130,7 @@ export default function EquipoNacionalidadInput({
       type="button"
       className="foto-badge"
       onClick={() => setEditando(true)}
-      title="Club, posición y nacionalidad"
+      title="Escudo, posición y nacionalidad"
     >
       🏳️
     </button>
