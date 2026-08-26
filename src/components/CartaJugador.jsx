@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { bandeUrl } from '../lib/paises.js';
 
-function nivelDe(media) {
+function nivelDe(jugador) {
+  if (jugador.activo === false) return 'inactivo';
+  const media = jugador.media;
   if (media == null) return 'sin-media';
-  if (media >= 85) return 'especial';
+  if (media >= 95) return 'azul';
+  if (media >= 85) return 'negro';
   if (media >= 75) return 'oro';
   if (media >= 65) return 'plata';
   return 'bronce';
@@ -28,7 +31,7 @@ export default function CartaJugador({ jugador }) {
   const [errorBandera, setErrorBandera] = useState(false);
   const [errorEscudo, setErrorEscudo] = useState(false);
 
-  const nivel = nivelDe(jugador.media);
+  const nivel = nivelDe(jugador);
 
   const mostrarFoto = jugador.fotoUrl && !errorFoto;
   const urlBandera = bandeUrl(jugador.nacionalidad);
@@ -75,7 +78,7 @@ export default function CartaJugador({ jugador }) {
           )}
         </div>
 
-        <div className={`carta-html-nombre-franja carta-html-${nivel}`}>
+        <div className="carta-html-nombre-franja">
           <span className="carta-html-nombre">{jugador.nombre}</span>
         </div>
       </div>
