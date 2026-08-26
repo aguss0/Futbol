@@ -30,17 +30,23 @@ export default async function handler(req, res) {
       const data = {};
       if (typeof activo === 'boolean') data.activo = activo;
       if (media !== undefined) {
-        if (media === null) {
-          data.media = null;
-        } else {
-          const n = Number(media);
-          if (!Number.isInteger(n) || n < 1 || n > 99) {
-            return res
-              .status(400)
-              .json({ error: 'La media debe ser un número entre 1 y 99' });
-          }
-          data.media = n;
+      if (media === null) {
+        // Volver al comportamiento automático normal: sin override, cuenta
+        // todo el historial desde la media por defecto.
+        data.media = null;
+        data.mediaReinicioFecha = null;
+      } else {
+        const n = Number(media);
+        if (!Number.isInteger(n) || n < 1 || n > 99) {
+          return res
+            .status(400)
+            .json({ error: 'La media debe ser un número entre 1 y 99' });
         }
+        data.media = n;
+        // Es un ajuste manual (excepción): a partir de ahora, solo cuentan
+        // los partidos que se carguen de acá en adelante.
+        data.mediaReinicioFecha = new Date();
+      }
       }
       if (fotoUrl !== undefined) data.fotoUrl = fotoUrl ? fotoUrl.trim() : null;
       if (equipo !== undefined) data.equipo = equipo ? equipo.trim() : null;

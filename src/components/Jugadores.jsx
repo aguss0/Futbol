@@ -104,7 +104,12 @@ export default function Jugadores() {
 
   function abrirCarta(j) {
     const mediaInicial = j.media ?? MEDIA_INICIAL_POR_DEFECTO;
-    const mediaCalculada = calcularMedia(j.id, partidos, mediaInicial);
+    const mediaCalculada = calcularMedia(
+      j.id,
+      partidos,
+      mediaInicial,
+      j.mediaReinicioFecha
+    );
     setCartaAbierta({ ...j, media: mediaCalculada });
   }
 
@@ -131,7 +136,12 @@ export default function Jugadores() {
         jugadores.map((j) => {
           const stats = calcularStats(j.id, partidos);
           const mediaInicial = j.media ?? MEDIA_INICIAL_POR_DEFECTO;
-          const mediaCalculada = calcularMedia(j.id, partidos, mediaInicial);
+          const mediaCalculada = calcularMedia(
+            j.id,
+            partidos,
+            mediaInicial,
+            j.mediaReinicioFecha
+          );
           return (
             <div key={j.id} className="jugador-bloque">
               <div className="jugador-row">

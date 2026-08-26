@@ -115,10 +115,23 @@ function clamp(n, min, max) {
 // El ajuste se atenúa según la media que ya tiene el jugador en ese
 // momento: cuanto más alta, más cuesta subir y más pesa una caída; cuanto
 // más baja, más fácil sube y menos pesa una caída.
-export function calcularMedia(jugadorId, partidos, mediaInicial = 70) {
-  const jugados = partidos.filter((p) =>
+export function calcularMedia(
+  jugadorId,
+  partidos,
+  mediaInicial = 70,
+  fechaReinicio = null
+) {
+  let jugados = partidos.filter((p) =>
     p.participaciones.some((pp) => pp.jugadorId === jugadorId)
   );
+
+  // Si hubo un ajuste manual (excepción), solo cuentan los partidos
+  // cargados DESPUÉS de ese ajuste — los anteriores quedan "borrados" del
+  // cálculo, como si se reiniciara el conteo desde ese número.
+  if (fechaReinicio) {
+    const limite = new Date(fechaReinicio).getTime();
+    jugados = jugados.filter((p) => new Date(p.createdAt).getTime() > limite);
+  }
 
   // Se procesan del partido más viejo al más nuevo (la API los trae al
   // revés, del más nuevo al más viejo).
