@@ -8,19 +8,19 @@ function nivelDe(media) {
   return 'bronce';
 }
 
-export default function MediaBadge({ media, onGuardar }) {
+export default function MediaBadge({ mediaMostrada, mediaInicial, onGuardar }) {
   const [editando, setEditando] = useState(false);
-  const [valor, setValor] = useState(media ?? '');
+  const [valor, setValor] = useState(mediaInicial ?? '');
   const [guardando, setGuardando] = useState(false);
 
   async function confirmar() {
     const n = valor === '' ? null : Number(valor);
     if (n !== null && (!Number.isInteger(n) || n < 1 || n > 99)) {
-      setValor(media ?? '');
+      setValor(mediaInicial ?? '');
       setEditando(false);
       return;
     }
-    if (n === media) {
+    if (n === mediaInicial) {
       setEditando(false);
       return;
     }
@@ -48,7 +48,7 @@ export default function MediaBadge({ media, onGuardar }) {
         onKeyDown={(e) => {
           if (e.key === 'Enter') e.target.blur();
           if (e.key === 'Escape') {
-            setValor(media ?? '');
+            setValor(mediaInicial ?? '');
             setEditando(false);
           }
         }}
@@ -59,11 +59,11 @@ export default function MediaBadge({ media, onGuardar }) {
   return (
     <button
       type="button"
-      className={`media-badge media-${nivelDe(media)}`}
+      className={`media-badge media-${nivelDe(mediaMostrada)}`}
       onClick={() => setEditando(true)}
-      title="Click para editar la media"
+      title="La media se calcula sola según los resultados. Click para ajustar la media inicial (excepción)."
     >
-      {media ?? '—'}
+      {mediaMostrada ?? '—'}
     </button>
   );
 }

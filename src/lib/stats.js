@@ -98,3 +98,62 @@ export function calcularQuimica(partidos, limite = 5, minPartidosJuntos = 3) {
     .sort((a, b) => b.winrate - a.winrate || b.pj - a.pj)
     .slice(0, limite);
 }
+
+function clamp(n, min, max) {
+  return Math.min(max, Math.max(min, n));
+}
+
+// Calcula la media "en vivo" de un jugador recorriendo su historial de
+// partidos en orden cronológico, arrancando desde mediaInicial (el valor
+// que se carga a mano como excepción, ej. para un jugador nuevo).
+//
+// Por cada partido se suma/resta un ajuste según:
+// - si ganó, empató o perdió
+// - la diferencia de gol (con tope, para que una goleada no dispare todo)
+// - los goles que hizo ese jugador (con tope)
+//
+// El ajuste se atenúa según la media que ya tiene el jugador en ese
+// momento: cuanto más alta, más cuesta subir y más pesa una caída; cuanto
+// más baja, más fácil sube y menos pesa una caída.
+export function calcularMedia(jugadorId, partidos, mediaInicial = 70) {
+  const jugados = partidos.filter((p) =>
+    p.participaciones.some((pp) => pp.jugadorId === jugadorId)
+  );
+
+  // Se procesan del partido más viejo al más nuevo (la API los trae al
+  // revés, del más nuevo al más viejo).
+  const enOrden = [...jugados].sort(
+    (a, b) => new Date(a.fecha) - new Date(b.fecha) || a.id - b.id
+  );
+
+  let media = mediaInicial;
+
+  enOrden.forEach((p) => {
+    const participacion = p.participaciones.find(
+      (pp) => pp.jugadorId === jugadorId
+    );
+    const equipo = participacion.equipo;
+    const golesPropios = equipo === 'A' ? p.golesEquipoA : p.golesEquipoB;
+    const golesRival = equipo === 'A' ? p.golesEquipoB : p.golesEquipoA;
+    const diferencia = golesPropios - golesRival;
+
+    const deltaResultado = diferencia > 0 ? 2 : diferencia === 0 ? 0 : -2;
+    const deltaDiferencia = clamp(diferencia, -3, 3) * 0.5;
+    const deltaGoles = Math.min(participacion.goles || 0, 3);
+
+    const ajusteCrudo = deltaResultado + deltaDiferencia + deltaGoles;
+
+    let factor = 1;
+    if (ajusteCrudo > 0) {
+      // Cuanto más alta la media, más cuesta subir (factor baja de 1.6 a 0.3)
+      factor = clamp(1.6 - (media / 100) * 1.2, 0.3, 1.6);
+    } else if (ajusteCrudo < 0) {
+      // Cuanto más alta la media, más pesa una caída (factor sube de 0.4 a 1.6)
+      factor = clamp(0.4 + (media / 100) * 1.2, 0.4, 1.6);
+    }
+
+    media = clamp(media + ajusteCrudo * factor, 1, 99);
+  });
+
+  return Math.round(media);
+}

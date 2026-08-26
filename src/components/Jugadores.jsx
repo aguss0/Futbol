@@ -6,12 +6,14 @@ import {
   eliminarJugador,
   getPartidos,
 } from '../lib/api.js';
-import { calcularStats } from '../lib/stats.js';
+import { calcularStats, calcularMedia } from '../lib/stats.js';
 import MediaBadge from './MediaBadge.jsx';
 import FotoInput from './FotoInput.jsx';
 import EquipoNacionalidadInput from './EquipoNacionalidadInput.jsx';
 import UltimosResultados from './UltimosResultados.jsx';
 import CartaJugador from './CartaJugador.jsx';
+
+const MEDIA_INICIAL_POR_DEFECTO = 70;
 
 export default function Jugadores() {
   const [jugadores, setJugadores] = useState(null);
@@ -73,9 +75,9 @@ export default function Jugadores() {
     }
   }
 
-  async function handleMedia(j, nuevaMedia) {
+  async function handleMediaInicial(j, nuevaMediaInicial) {
     try {
-      await actualizarJugador(j.id, { media: nuevaMedia });
+      await actualizarJugador(j.id, { media: nuevaMediaInicial });
       cargarJugadores();
     } catch (e) {
       setError(e.message);
@@ -100,6 +102,12 @@ export default function Jugadores() {
     }
   }
 
+  function abrirCarta(j) {
+    const mediaInicial = j.media ?? MEDIA_INICIAL_POR_DEFECTO;
+    const mediaCalculada = calcularMedia(j.id, partidos, mediaInicial);
+    setCartaAbierta({ ...j, media: mediaCalculada });
+  }
+
   return (
     <div className="card">
       <form className="form-inline" onSubmit={handleSubmit}>
@@ -122,12 +130,14 @@ export default function Jugadores() {
       ) : (
         jugadores.map((j) => {
           const stats = calcularStats(j.id, partidos);
+          const mediaInicial = j.media ?? MEDIA_INICIAL_POR_DEFECTO;
+          const mediaCalculada = calcularMedia(j.id, partidos, mediaInicial);
           return (
             <div key={j.id} className="jugador-bloque">
               <div className="jugador-row">
                 <span
                   className={`nombre ${!j.activo ? 'inactivo' : ''}`}
-                  onClick={() => setCartaAbierta(j)}
+                  onClick={() => abrirCarta(j)}
                   title="Ver carta"
                 >
                   {j.nombre}
@@ -165,8 +175,9 @@ export default function Jugadores() {
                     onGuardar={(datos) => handleDetalles(j, datos)}
                   />
                   <MediaBadge
-                    media={j.media}
-                    onGuardar={(n) => handleMedia(j, n)}
+                    mediaMostrada={mediaCalculada}
+                    mediaInicial={mediaInicial}
+                    onGuardar={(n) => handleMediaInicial(j, n)}
                   />
                   <button
                     className="btn-secundario btn"
