@@ -103,6 +103,8 @@ function clamp(n, min, max) {
   return Math.min(max, Math.max(min, n));
 }
 
+const CAPITAN_MULTIPLICADOR = 1.5;
+
 // Calcula la media "en vivo" de un jugador recorriendo su historial de
 // partidos en orden cronológico, arrancando desde mediaInicial (el valor
 // que se carga a mano como excepción, ej. para un jugador nuevo).
@@ -154,7 +156,14 @@ export function calcularMedia(
     const deltaDiferencia = clamp(diferencia, -3, 3) * 0.5;
     const deltaGoles = Math.min(participacion.goles || 0, 3);
 
-    const ajusteCrudo = deltaResultado + deltaDiferencia + deltaGoles;
+    let ajusteCrudo = deltaResultado + deltaDiferencia + deltaGoles;
+
+    // El capitán tiene más responsabilidad: si el ajuste ya iba a ser
+    // positivo (ganó, hizo goles) se amplifica más todavía; si iba a ser
+    // negativo (perdió), también le pega más fuerte.
+    if (participacion.capitan) {
+      ajusteCrudo *= CAPITAN_MULTIPLICADOR;
+    }
 
     let factor = 1;
     if (ajusteCrudo > 0) {

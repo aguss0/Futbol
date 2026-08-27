@@ -22,6 +22,11 @@ function armarEquipoInicial(participaciones, equipo, jugadoresPorId) {
   return obj;
 }
 
+function capitanInicial(participaciones, equipo) {
+  const p = participaciones.find((pp) => pp.equipo === equipo && pp.capitan);
+  return p ? p.jugadorId : null;
+}
+
 export default function PartidoForm({
   partidoInicial,
   onGuardar,
@@ -42,11 +47,13 @@ export default function PartidoForm({
   const [golesB, setGolesB] = useState(
     partidoInicial ? String(partidoInicial.golesEquipoB) : ''
   );
-  const [goleadores, setGoleadores] = useState({}); // { [jugadorId]: cantidadDeGoles }
+  const [goleadores, setGoleadores] = useState({});
+  const [capitanAId, setCapitanAId] = useState(null);
+  const [capitanBId, setCapitanBId] = useState(null);
   const [error, setError] = useState('');
   const [ok, setOk] = useState(false);
   const [guardando, setGuardando] = useState(false);
-  const [slotAbierto, setSlotAbierto] = useState(null); // { equipo, key } | null
+  const [slotAbierto, setSlotAbierto] = useState(null);
 
   useEffect(() => {
     getJugadores()
@@ -65,6 +72,9 @@ export default function PartidoForm({
         golesIniciales[pp.jugadorId] = pp.goles || 0;
       });
       setGoleadores(golesIniciales);
+
+      setCapitanAId(capitanInicial(partidoInicial.participaciones, 'A'));
+      setCapitanBId(capitanInicial(partidoInicial.participaciones, 'B'));
     }
   }, [jugadores, partidoInicial]);
 
@@ -91,15 +101,20 @@ export default function PartidoForm({
   }
 
   function handleSelect(equipo, key, jugadorId) {
-    const jugador = jugadorId
-      ? jugadores.find((j) => j.id === Number(jugadorId))
+    const idNumerico = jugadorId ? Number(jugadorId) : null;
+    const jugador = idNumerico
+      ? jugadores.find((j) => j.id === idNumerico)
       : null;
+    const idAnterior = (equipo === 'A' ? equipoA : equipoB)[key]?.id ?? null;
     const setter = equipo === 'A' ? setEquipoA : setEquipoB;
     setter((prev) => ({ ...prev, [key]: jugador || null }));
+
+    if (!jugador) {
+      if (equipo === 'A' && capitanAId === idAnterior) setCapitanAId(null);
+      if (equipo === 'B' && capitanBId === idAnterior) setCapitanBId(null);
+    }
   }
 
-  // Lista plana de los jugadores ya elegidos en la formación, con su equipo,
-  // para poder cargarles los goles.
   function jugadoresElegidos() {
     const lista = [];
     POSICIONES.forEach(({ key }) => {
@@ -115,6 +130,13 @@ export default function PartidoForm({
     const n = valor === '' ? 0 : Math.max(0, Number(valor));
     setGoleadores((prev) => ({ ...prev, [jugadorId]: n }));
   }
+
+  const jugadoresEquipoA = POSICIONES.map(({ key }) => equipoA[key]).filter(
+    Boolean
+  );
+  const jugadoresEquipoB = POSICIONES.map(({ key }) => equipoB[key]).filter(
+    Boolean
+  );
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -143,6 +165,8 @@ export default function PartidoForm({
         equipoA: idsA,
         equipoB: idsB,
         goleadores,
+        capitanAId,
+        capitanBId,
       });
       setOk(true);
       if (!partidoInicial) {
@@ -152,6 +176,8 @@ export default function PartidoForm({
         setGolesA('');
         setGolesB('');
         setGoleadores({});
+        setCapitanAId(null);
+        setCapitanBId(null);
       }
     } catch (e) {
       setError(e.message);
@@ -280,6 +306,56 @@ export default function PartidoForm({
           />
         </div>
       </div>
+
+      {(jugadoresEquipoA.length > 0 || jugadoresEquipoB.length > 0) && (
+        <div className="seccion" style={{ marginTop: 0 }}>
+          <h2>Capitanes (opcional)</h2>
+          <div className="fila">
+            <div className="campo">
+              <label>
+                <span className="chip-color pechera-a" /> Capitán equipo A
+              </label>
+              <select
+                value={capitanAId ?? ''}
+                onChange={(e) =>
+                  setCapitanAId(e.target.value ? Number(e.target.value) : null)
+                }
+                disabled={jugadoresEquipoA.length === 0}
+              >
+                <option value="">Sin capitán</option>
+                {jugadoresEquipoA.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="campo">
+              <label>
+                <span className="chip-color pechera-b" /> Capitán equipo B
+              </label>
+              <select
+                value={capitanBId ?? ''}
+                onChange={(e) =>
+                  setCapitanBId(e.target.value ? Number(e.target.value) : null)
+                }
+                disabled={jugadoresEquipoB.length === 0}
+              >
+                <option value="">Sin capitán</option>
+                {jugadoresEquipoB.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <p className="capitan-nota">
+            El capitán suma o resta media un 50% más rápido que el resto,
+            según cómo le vaya al equipo.
+          </p>
+        </div>
+      )}
 
       {jugadoresElegidos().length > 0 && (
         <div className="seccion" style={{ marginTop: 0 }}>

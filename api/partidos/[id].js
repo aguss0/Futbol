@@ -19,8 +19,17 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-      const { fecha, cancha, golesEquipoA, golesEquipoB, equipoA, equipoB, goleadores } =
-        req.body || {};
+      const {
+        fecha,
+        cancha,
+        golesEquipoA,
+        golesEquipoB,
+        equipoA,
+        equipoB,
+        goleadores,
+        capitanAId,
+        capitanBId,
+      } = req.body || {};
 
       if (!fecha) {
         return res.status(400).json({ error: 'Falta la fecha' });
@@ -49,11 +58,13 @@ export default async function handler(req, res) {
           jugadorId,
           equipo: 'A',
           goles: Number(golesPorJugador[jugadorId]) || 0,
+          capitan: jugadorId === capitanAId,
         })),
         ...equipoB.map((jugadorId) => ({
           jugadorId,
           equipo: 'B',
           goles: Number(golesPorJugador[jugadorId]) || 0,
+          capitan: jugadorId === capitanBId,
         })),
       ];
 

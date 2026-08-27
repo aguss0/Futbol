@@ -34,11 +34,12 @@ model Partido {
 }
 
 model ParticipacionPartido {
-  id        Int    @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   partidoId Int
   jugadorId Int
-  equipo    String // "A" o "B"
-  goles     Int    @default(0)
+  equipo    String
+  goles     Int     @default(0)
+  capitan   Boolean @default(false)
 
   partido Partido @relation(fields: [partidoId], references: [id], onDelete: Cascade)
   jugador Jugador @relation(fields: [jugadorId], references: [id])
