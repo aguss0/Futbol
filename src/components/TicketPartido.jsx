@@ -1,3 +1,5 @@
+import { inferirFormato } from '../lib/formaciones.js';
+
 function nombresDe(partido, equipo) {
   return partido.participaciones
     .filter((p) => p.equipo === equipo)
@@ -23,6 +25,7 @@ export default function TicketPartido({ partido, onEditar, onEliminar }) {
     <div className="ticket">
       <div className="ticket-info">
         <span className="fecha">{formatearFecha(partido.fecha)}</span>
+        <span className="formato">Fútbol {inferirFormato(partido.participaciones)}</span>
         {partido.cancha && <span className="cancha">{partido.cancha}</span>}
       </div>
       <div className="ticket-marcador">

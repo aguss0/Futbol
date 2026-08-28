@@ -166,6 +166,14 @@ button,
   opacity: 0.55;
 }
 
+.ticket-info .formato {
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--tinta);
+  opacity: 0.5;
+}
+
 .ticket-marcador {
   flex: 1;
   padding: 14px 20px;
@@ -351,6 +359,38 @@ button:focus-visible {
   flex: 1;
 }
 
+.formato-opciones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.formato-opcion {
+  flex: 1;
+  min-width: 110px;
+  padding: 10px 12px;
+  border: 1px solid var(--linea);
+  border-radius: 3px;
+  background: var(--tiza);
+  color: var(--tinta);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+
+.formato-opcion.activo {
+  background: var(--cancha);
+  color: var(--tiza);
+  border-color: var(--cancha);
+}
+
+.formato-aviso {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #b3402a;
+}
+
 .btn {
   font-family: var(--display);
   letter-spacing: 0.4px;
@@ -383,7 +423,7 @@ button:focus-visible {
   background: var(--tiza);
 }
 
-/* --- Cancha visual (formación 1-2-2) --- */
+/* --- Cancha visual (formación según formato 5 / 6 / 7) --- */
 
 .campo-wrap {
   border-radius: 6px;

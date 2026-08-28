@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getJugadores } from '../lib/api.js';
-import CampoFormacion, { POSICIONES } from './CampoFormacion.jsx';
+import CampoFormacion from './CampoFormacion.jsx';
+import {
+  FORMATOS_DISPONIBLES,
+  equipoVacio,
+  inferirFormato,
+  obtenerPosiciones,
+  traspasarSeleccion,
+} from '../lib/formaciones.js';
 
 function hoyISO() {
   const d = new Date();
@@ -8,14 +15,16 @@ function hoyISO() {
   return new Date(d - tz).toISOString().slice(0, 10);
 }
 
-const VACIO = Object.fromEntries(POSICIONES.map((p) => [p.key, null]));
+function formatoInicial(partido) {
+  return partido ? inferirFormato(partido.participaciones) : 5;
+}
 
-function armarEquipoInicial(participaciones, equipo, jugadoresPorId) {
+function armarEquipoInicial(participaciones, equipo, jugadoresPorId, posiciones) {
   const ids = participaciones
     .filter((p) => p.equipo === equipo)
     .map((p) => p.jugadorId);
-  const obj = { ...VACIO };
-  POSICIONES.forEach(({ key }, i) => {
+  const obj = Object.fromEntries(posiciones.map((p) => [p.key, null]));
+  posiciones.forEach(({ key }, i) => {
     const id = ids[i];
     if (id && jugadoresPorId[id]) obj[key] = jugadoresPorId[id];
   });
@@ -27,6 +36,12 @@ function capitanInicial(participaciones, equipo) {
   return p ? p.jugadorId : null;
 }
 
+function idsDelEquipo(seleccion, posiciones) {
+  return new Set(
+    posiciones.map(({ key }) => seleccion[key]?.id).filter(Boolean)
+  );
+}
+
 export default function PartidoForm({
   partidoInicial,
   onGuardar,
@@ -35,8 +50,14 @@ export default function PartidoForm({
   onCancelar,
 }) {
   const [jugadores, setJugadores] = useState(null);
-  const [equipoA, setEquipoA] = useState(VACIO);
-  const [equipoB, setEquipoB] = useState(VACIO);
+  const [formato, setFormato] = useState(() => formatoInicial(partidoInicial));
+  const posiciones = obtenerPosiciones(formato);
+  const [equipoA, setEquipoA] = useState(() =>
+    equipoVacio(formatoInicial(partidoInicial))
+  );
+  const [equipoB, setEquipoB] = useState(() =>
+    equipoVacio(formatoInicial(partidoInicial))
+  );
   const [fecha, setFecha] = useState(
     partidoInicial ? partidoInicial.fecha.slice(0, 10) : hoyISO()
   );
@@ -64,8 +85,15 @@ export default function PartidoForm({
   useEffect(() => {
     if (jugadores && partidoInicial) {
       const porId = Object.fromEntries(jugadores.map((j) => [j.id, j]));
-      setEquipoA(armarEquipoInicial(partidoInicial.participaciones, 'A', porId));
-      setEquipoB(armarEquipoInicial(partidoInicial.participaciones, 'B', porId));
+      const fmt = inferirFormato(partidoInicial.participaciones);
+      const pos = obtenerPosiciones(fmt);
+      setFormato(fmt);
+      setEquipoA(
+        armarEquipoInicial(partidoInicial.participaciones, 'A', porId, pos)
+      );
+      setEquipoB(
+        armarEquipoInicial(partidoInicial.participaciones, 'B', porId, pos)
+      );
 
       const golesIniciales = {};
       partidoInicial.participaciones.forEach((pp) => {
@@ -78,9 +106,25 @@ export default function PartidoForm({
     }
   }, [jugadores, partidoInicial]);
 
+  function cambiarFormato(nuevo) {
+    const n = Number(nuevo);
+    const pos = obtenerPosiciones(n);
+    const nextA = traspasarSeleccion(equipoA, n);
+    const nextB = traspasarSeleccion(equipoB, n);
+    setFormato(n);
+    setEquipoA(nextA);
+    setEquipoB(nextB);
+    setSlotAbierto(null);
+
+    const idsA = idsDelEquipo(nextA, pos);
+    const idsB = idsDelEquipo(nextB, pos);
+    if (capitanAId && !idsA.has(capitanAId)) setCapitanAId(null);
+    if (capitanBId && !idsB.has(capitanBId)) setCapitanBId(null);
+  }
+
   function idsUsados(exceptEquipo, exceptKey) {
     const usados = new Set();
-    POSICIONES.forEach(({ key }) => {
+    posiciones.forEach(({ key }) => {
       if (!(exceptEquipo === 'A' && key === exceptKey) && equipoA[key]) {
         usados.add(equipoA[key].id);
       }
@@ -117,10 +161,10 @@ export default function PartidoForm({
 
   function jugadoresElegidos() {
     const lista = [];
-    POSICIONES.forEach(({ key }) => {
+    posiciones.forEach(({ key }) => {
       if (equipoA[key]) lista.push({ equipo: 'A', jugador: equipoA[key] });
     });
-    POSICIONES.forEach(({ key }) => {
+    posiciones.forEach(({ key }) => {
       if (equipoB[key]) lista.push({ equipo: 'B', jugador: equipoB[key] });
     });
     return lista;
@@ -131,10 +175,10 @@ export default function PartidoForm({
     setGoleadores((prev) => ({ ...prev, [jugadorId]: n }));
   }
 
-  const jugadoresEquipoA = POSICIONES.map(({ key }) => equipoA[key]).filter(
+  const jugadoresEquipoA = posiciones.map(({ key }) => equipoA[key]).filter(
     Boolean
   );
-  const jugadoresEquipoB = POSICIONES.map(({ key }) => equipoB[key]).filter(
+  const jugadoresEquipoB = posiciones.map(({ key }) => equipoB[key]).filter(
     Boolean
   );
 
@@ -143,11 +187,11 @@ export default function PartidoForm({
     setError('');
     setOk(false);
 
-    const idsA = POSICIONES.map(({ key }) => equipoA[key]?.id).filter(Boolean);
-    const idsB = POSICIONES.map(({ key }) => equipoB[key]?.id).filter(Boolean);
+    const idsA = posiciones.map(({ key }) => equipoA[key]?.id).filter(Boolean);
+    const idsB = posiciones.map(({ key }) => equipoB[key]?.id).filter(Boolean);
 
-    if (idsA.length < 5 || idsB.length < 5) {
-      setError('Completá los 5 jugadores de cada equipo.');
+    if (idsA.length < formato || idsB.length < formato) {
+      setError(`Completá los ${formato} jugadores de cada equipo.`);
       return;
     }
     if (golesA === '' || golesB === '') {
@@ -170,8 +214,8 @@ export default function PartidoForm({
       });
       setOk(true);
       if (!partidoInicial) {
-        setEquipoA(VACIO);
-        setEquipoB(VACIO);
+        setEquipoA(equipoVacio(formato));
+        setEquipoB(equipoVacio(formato));
         setCancha('');
         setGolesA('');
         setGolesB('');
@@ -198,8 +242,34 @@ export default function PartidoForm({
     );
   }
 
+  const etiquetaSlot = posiciones.find((p) => p.key === slotAbierto?.key);
+
   return (
     <form className="card" onSubmit={handleSubmit}>
+      <div className="fila">
+        <div className="campo">
+          <label>Formato</label>
+          <div className="formato-opciones">
+            {FORMATOS_DISPONIBLES.map(({ valor, label }) => (
+              <button
+                key={valor}
+                type="button"
+                className={`formato-opcion ${formato === valor ? 'activo' : ''}`}
+                onClick={() => cambiarFormato(valor)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {activos.length < formato * 2 && (
+            <p className="formato-aviso">
+              Para fútbol {formato} necesitás {formato * 2} jugadores
+              activos (tenés {activos.length}).
+            </p>
+          )}
+        </div>
+      </div>
+
       <div className="fila">
         <div className="campo">
           <label>Fecha</label>
@@ -222,13 +292,14 @@ export default function PartidoForm({
       <div className="campo-contenedor">
         <div className="campo-wrap">
           <CampoFormacion
+            posiciones={posiciones}
             seleccionA={equipoA}
             seleccionB={equipoB}
             onSlotClick={(equipo, key) => setSlotAbierto({ equipo, key })}
           />
         </div>
 
-        {slotAbierto && (
+        {slotAbierto && etiquetaSlot && (
           <div
             className="selector-overlay"
             onClick={() => setSlotAbierto(null)}
@@ -237,8 +308,7 @@ export default function PartidoForm({
               <div className="selector-header">
                 <span>
                   <span className={`chip-color pechera-${slotAbierto.equipo.toLowerCase()}`} />{' '}
-                  Equipo {slotAbierto.equipo} ·{' '}
-                  {POSICIONES.find((p) => p.key === slotAbierto.key).label}
+                  Equipo {slotAbierto.equipo} · {etiquetaSlot.label}
                 </span>
                 <button
                   type="button"
