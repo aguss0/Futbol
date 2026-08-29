@@ -75,6 +75,7 @@ export default function PartidoForm({
   const [ok, setOk] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [slotAbierto, setSlotAbierto] = useState(null);
+  const [seleccionandoCapitan, setSeleccionandoCapitan] = useState(false);
 
   useEffect(() => {
     getJugadores()
@@ -156,6 +157,22 @@ export default function PartidoForm({
     if (!jugador) {
       if (equipo === 'A' && capitanAId === idAnterior) setCapitanAId(null);
       if (equipo === 'B' && capitanBId === idAnterior) setCapitanBId(null);
+    }
+  }
+
+  function handleSlotClick(equipo, key) {
+    if (!seleccionandoCapitan) {
+      setSlotAbierto({ equipo, key });
+      return;
+    }
+
+    const jugador = (equipo === 'A' ? equipoA : equipoB)[key];
+    if (!jugador) return;
+
+    if (equipo === 'A') {
+      setCapitanAId((actual) => actual === jugador.id ? null : jugador.id);
+    } else {
+      setCapitanBId((actual) => actual === jugador.id ? null : jugador.id);
     }
   }
 
@@ -295,7 +312,10 @@ export default function PartidoForm({
             posiciones={posiciones}
             seleccionA={equipoA}
             seleccionB={equipoB}
-            onSlotClick={(equipo, key) => setSlotAbierto({ equipo, key })}
+            capitanAId={capitanAId}
+            capitanBId={capitanBId}
+            seleccionandoCapitan={seleccionandoCapitan}
+            onSlotClick={handleSlotClick}
           />
         </div>
 
@@ -378,52 +398,35 @@ export default function PartidoForm({
       </div>
 
       {(jugadoresEquipoA.length > 0 || jugadoresEquipoB.length > 0) && (
-        <div className="seccion" style={{ marginTop: 0 }}>
-          <h2>Capitanes (opcional)</h2>
-          <div className="fila">
-            <div className="campo">
-              <label>
-                <span className="chip-color pechera-a" /> Capitán equipo A
-              </label>
-              <select
-                value={capitanAId ?? ''}
-                onChange={(e) =>
-                  setCapitanAId(e.target.value ? Number(e.target.value) : null)
-                }
-                disabled={jugadoresEquipoA.length === 0}
-              >
-                <option value="">Sin capitán</option>
-                {jugadoresEquipoA.map((j) => (
-                  <option key={j.id} value={j.id}>
-                    {j.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="campo">
-              <label>
-                <span className="chip-color pechera-b" /> Capitán equipo B
-              </label>
-              <select
-                value={capitanBId ?? ''}
-                onChange={(e) =>
-                  setCapitanBId(e.target.value ? Number(e.target.value) : null)
-                }
-                disabled={jugadoresEquipoB.length === 0}
-              >
-                <option value="">Sin capitán</option>
-                {jugadoresEquipoB.map((j) => (
-                  <option key={j.id} value={j.id}>
-                    {j.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className={`capitanes-cancha ${seleccionandoCapitan ? 'activo' : ''}`}>
+          <div>
+            <h2>Capitanes <span>(opcional)</span></h2>
+            <p>
+              {seleccionandoCapitan
+                ? 'Tocá un jugador de cada equipo en la cancha. Tocándolo de nuevo le quitás la capitanía.'
+                : 'Elegilos directamente sobre la cancha.'}
+            </p>
+            {(capitanAId || capitanBId) && (
+              <div className="capitanes-elegidos">
+                <span><i className="chip-color pechera-a" /> {jugadoresEquipoA.find((j) => j.id === capitanAId)?.nombre || 'Sin capitán'}</span>
+                <span><i className="chip-color pechera-b" /> {jugadoresEquipoB.find((j) => j.id === capitanBId)?.nombre || 'Sin capitán'}</span>
+              </div>
+            )}
+            <p className="capitan-nota">
+              El capitán suma o resta media un 50% más rápido que el resto,
+              según cómo le vaya al equipo.
+            </p>
           </div>
-          <p className="capitan-nota">
-            El capitán suma o resta media un 50% más rápido que el resto,
-            según cómo le vaya al equipo.
-          </p>
+          <button
+            type="button"
+            className={`btn ${seleccionandoCapitan ? 'btn-secundario' : ''}`}
+            onClick={() => {
+              setSeleccionandoCapitan((activo) => !activo);
+              setSlotAbierto(null);
+            }}
+          >
+            {seleccionandoCapitan ? 'Listo' : 'Elegir capitanes'}
+          </button>
         </div>
       )}
 

@@ -7,7 +7,7 @@ function iniciales(nombre) {
     .join('');
 }
 
-function Marcador({ x, y, jugador, colorClass, corta, onClick }) {
+function Marcador({ x, y, jugador, colorClass, corta, onClick, esCapitan }) {
   return (
     <g
       transform={`translate(${x}, ${y})`}
@@ -31,6 +31,12 @@ function Marcador({ x, y, jugador, colorClass, corta, onClick }) {
       <text textAnchor="middle" y="40" className="marcador-nombre">
         {jugador ? jugador.nombre.split(' ')[0] : corta}
       </text>
+      {esCapitan && (
+        <g className="marcador-capitan" transform="translate(18, -18)">
+          <circle r="10" />
+          <text textAnchor="middle" dy="4">C</text>
+        </g>
+      )}
     </g>
   );
 }
@@ -42,6 +48,9 @@ export default function CampoFormacion({
   seleccionA,
   seleccionB,
   onSlotClick,
+  capitanAId,
+  capitanBId,
+  seleccionandoCapitan = false,
 }) {
   return (
     <svg
@@ -64,6 +73,7 @@ export default function CampoFormacion({
           jugador={seleccionA[key]}
           colorClass="pechera-a"
           corta={corta}
+          esCapitan={seleccionA[key]?.id === capitanAId}
           onClick={() => onSlotClick?.('A', key)}
         />
       ))}
@@ -75,9 +85,15 @@ export default function CampoFormacion({
           jugador={seleccionB[key]}
           colorClass="pechera-b"
           corta={corta}
+          esCapitan={seleccionB[key]?.id === capitanBId}
           onClick={() => onSlotClick?.('B', key)}
         />
       ))}
+      {seleccionandoCapitan && (
+        <text x="320" y="382" textAnchor="middle" className="campo-modo-capitan">
+          TOCÁ UN JUGADOR PARA ELEGIR CAPITÁN
+        </text>
+      )}
     </svg>
   );
 }

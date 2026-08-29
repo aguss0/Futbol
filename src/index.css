@@ -499,6 +499,80 @@ button:focus-visible {
   opacity: 0.85;
 }
 
+.marcador-capitan circle {
+  fill: var(--ambar);
+  stroke: var(--tiza);
+  stroke-width: 2;
+}
+
+.marcador-capitan text {
+  fill: var(--cancha-oscuro);
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.campo-modo-capitan {
+  fill: var(--tiza);
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.capitanes-cancha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: -8px 0 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.capitanes-cancha.activo {
+  background: rgba(232, 166, 61, 0.08);
+  border-color: var(--ambar);
+}
+
+.capitanes-cancha h2 {
+  margin: 0 0 3px;
+  font-size: 14px;
+}
+
+.capitanes-cancha h2 span {
+  font-family: var(--texto);
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+.capitanes-cancha p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.capitanes-elegidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.capitanes-cancha > .btn {
+  flex-shrink: 0;
+}
+
+.capitanes-cancha .capitan-nota {
+  margin-top: 7px;
+  font-size: 11px;
+}
+
 /* --- Selección de plantel: click en la cancha --- */
 
 .campo-contenedor {
