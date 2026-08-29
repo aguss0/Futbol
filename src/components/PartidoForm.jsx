@@ -216,6 +216,29 @@ export default function PartidoForm({
       return;
     }
 
+    const totalGoleadoresA = idsA.reduce(
+      (total, jugadorId) => total + Number(goleadores[jugadorId] || 0),
+      0
+    );
+    const totalGoleadoresB = idsB.reduce(
+      (total, jugadorId) => total + Number(goleadores[jugadorId] || 0),
+      0
+    );
+
+    if (totalGoleadoresA > Number(golesA)) {
+      setError(
+        `Los goleadores del equipo A suman ${totalGoleadoresA}, pero el equipo hizo ${golesA} ${Number(golesA) === 1 ? 'gol' : 'goles'}.`
+      );
+      return;
+    }
+
+    if (totalGoleadoresB > Number(golesB)) {
+      setError(
+        `Los goleadores del equipo B suman ${totalGoleadoresB}, pero el equipo hizo ${golesB} ${Number(golesB) === 1 ? 'gol' : 'goles'}.`
+      );
+      return;
+    }
+
     setGuardando(true);
     try {
       await onGuardar({
