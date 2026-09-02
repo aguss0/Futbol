@@ -5,9 +5,8 @@
 const LINEAS_POR_FORMATO = {
   5: [
     { rol: 'arquero', corta: 'ARQ', cantidad: 1, x: 40 },
-    { rol: 'defensor', corta: 'DEF', cantidad: 2, x: 125 },
-    { rol: 'mediocampista', corta: 'MED', cantidad: 1, x: 200 },
-    { rol: 'delantero', corta: 'DEL', cantidad: 1, x: 270 },
+    { rol: 'defensor', corta: 'DEF', cantidad: 2, x: 130 },
+    { rol: 'delantero', corta: 'DEL', cantidad: 2, x: 250 },
   ],
   6: [
     { rol: 'arquero', corta: 'ARQ', cantidad: 1, x: 40 },

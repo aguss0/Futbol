@@ -152,7 +152,7 @@ export function calcularMedia(
     const golesRival = equipo === 'A' ? p.golesEquipoB : p.golesEquipoA;
     const diferencia = golesPropios - golesRival;
 
-    const deltaResultado = diferencia > 0 ? 2 : diferencia === 0 ? 0 : -2;
+    const deltaResultado = diferencia > 0 ? 1 : diferencia === 0 ? 0 : -1;
     const deltaDiferencia = clamp(diferencia, -3, 3) * 0.5;
     const deltaGoles = Math.min(participacion.goles || 0, 3);
 
