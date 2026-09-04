@@ -1867,18 +1867,12 @@ button:focus-visible {
 }
 
 .campo-wrap:hover {
-  transform: translateY(-3px);
   box-shadow: 0 14px 30px rgba(16, 40, 31, 0.2);
 }
 
 .marcador-click {
-  transition: transform 0.18s ease;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.marcador-click:hover {
-  transform: scale(1.08);
+  /* No aplicar transform al grupo SVG: reemplazaría el translate(x, y)
+     que posiciona al jugador dentro de la cancha. */
 }
 
 .selector-overlay,
