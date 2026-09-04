@@ -110,7 +110,11 @@ export default function Jugadores() {
       mediaInicial,
       j.mediaReinicioFecha
     );
-    setCartaAbierta({ ...j, media: mediaCalculada });
+    setCartaAbierta({
+      ...j,
+      media: mediaCalculada,
+      stats: calcularStats(j.id, partidos),
+    });
   }
 
   return (

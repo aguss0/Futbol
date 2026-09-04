@@ -1228,16 +1228,71 @@ button:focus-visible {
 
 .carta-html-wrap {
   width: 220px;
+  height: 310px;
   max-width: 100%;
+  cursor: pointer;
+  perspective: 1000px;
+  outline: none;
+  --giro-x: 0deg;
+  --giro-y: 0deg;
+  --brillo-x: 50%;
+  --brillo-y: 50%;
+}
+
+.carta-html-wrap:focus-visible {
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px var(--ambar);
+}
+
+.carta-html-tilt {
+  width: 100%;
+  height: 100%;
+  transform: rotateX(var(--giro-x)) rotateY(var(--giro-y));
+  transform-style: preserve-3d;
+  transition: transform 0.16s ease-out;
+}
+
+.carta-html-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carta-html-flipper.girada {
+  transform: rotateY(180deg);
 }
 
 .carta-html {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 220px;
   height: 310px;
   max-width: 100%;
   overflow: hidden;
   background: linear-gradient(160deg, #cfd8d3, #a7b3ac);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.carta-html-reverso {
+  transform: rotateY(180deg);
+}
+
+.carta-html::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--brillo-x) var(--brillo-y),
+    rgba(255, 255, 255, 0.28),
+    transparent 42%
+  );
+  mix-blend-mode: soft-light;
 }
 
 .carta-html-bronce {
@@ -1386,6 +1441,96 @@ button:focus-visible {
   text-align: center;
 }
 
+.carta-giro-ayuda {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 27px;
+  z-index: 5;
+  text-align: center;
+  font-family: var(--display);
+  font-size: 8px;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+  color: var(--tinta);
+  opacity: 0.58;
+}
+
+.carta-reverso-contenido {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 38px 25px 42px;
+  color: var(--tinta);
+  background:
+    radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.28), transparent 34%),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.09));
+}
+
+.carta-reverso-kicker {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  opacity: 0.62;
+}
+
+.carta-reverso-nombre {
+  width: 100%;
+  margin-top: 8px;
+  overflow: hidden;
+  font-family: var(--display);
+  font-size: 19px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.carta-reverso-media {
+  margin-top: 4px;
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+.carta-reverso-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  margin-top: 25px;
+  border-top: 1px solid rgba(22, 36, 28, 0.22);
+  border-left: 1px solid rgba(22, 36, 28, 0.22);
+}
+
+.carta-reverso-grid div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 3px 8px;
+  border-right: 1px solid rgba(22, 36, 28, 0.22);
+  border-bottom: 1px solid rgba(22, 36, 28, 0.22);
+}
+
+.carta-reverso-grid strong {
+  font-family: var(--marcador);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.carta-reverso-grid span {
+  margin-top: 4px;
+  font-family: var(--display);
+  font-size: 8px;
+  letter-spacing: 0.7px;
+  opacity: 0.62;
+}
+
 .carta-overlay {
   position: fixed;
   inset: 0;
@@ -1453,6 +1598,20 @@ button:focus-visible {
 .carta-html-negro .carta-html-posicion,
 .carta-html-azul .carta-html-posicion {
   color: rgba(247, 245, 239, 0.8);
+}
+
+.carta-html-negro .carta-reverso-contenido,
+.carta-html-azul .carta-reverso-contenido,
+.carta-html-negro .carta-giro-ayuda,
+.carta-html-azul .carta-giro-ayuda {
+  color: var(--tiza);
+}
+
+.carta-html-negro .carta-reverso-grid,
+.carta-html-negro .carta-reverso-grid div,
+.carta-html-azul .carta-reverso-grid,
+.carta-html-azul .carta-reverso-grid div {
+  border-color: rgba(247, 245, 239, 0.24);
 }
 
 /* --- Sorteo de equipos --- */
