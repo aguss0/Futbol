@@ -169,6 +169,12 @@ export function calcularMedia(
     if (ajusteCrudo > 0) {
       // Cuanto más alta la media, más cuesta subir (factor baja de 1.6 a 0.3)
       factor = clamp(1.6 - (media / 100) * 1.2, 0.3, 1.6);
+
+      // En los extremos se acentúa la progresión: desde 90 cuesta
+      // considerablemente más subir, mientras que desde 64 hacia abajo
+      // la recuperación es más rápida.
+      if (media >= 90) factor *= 0.65;
+      else if (media <= 64) factor *= 1.35;
     } else if (ajusteCrudo < 0) {
       // Cuanto más alta la media, más pesa una caída (factor sube de 0.4 a 1.6)
       factor = clamp(0.4 + (media / 100) * 1.2, 0.4, 1.6);

@@ -1553,3 +1553,260 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Movimiento y profundidad de la interfaz --- */
+
+@keyframes aparecer-suave {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes abrir-overlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes presentar-carta {
+  0% {
+    opacity: 0;
+    transform: perspective(900px) translateY(32px) scale(0.86) rotateY(-12deg);
+  }
+  65% {
+    opacity: 1;
+    transform: perspective(900px) translateY(-5px) scale(1.025) rotateY(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(900px) translateY(0) scale(1) rotateY(0);
+  }
+}
+
+@keyframes brillo-carta {
+  0%, 25% { transform: translateX(-180%) skewX(-18deg); }
+  55%, 100% { transform: translateX(260%) skewX(-18deg); }
+}
+
+.app > :not(.encabezado):not(.tabs) {
+  animation: aparecer-suave 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.encabezado h1 {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    text-shadow 0.3s ease;
+}
+
+.encabezado:hover h1 {
+  transform: translateY(-2px);
+  text-shadow: 0 8px 20px rgba(16, 40, 31, 0.12);
+}
+
+.tab {
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tab:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.ticket,
+.card,
+.tabla-goleadores {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.ticket {
+  animation: aparecer-suave 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ticket:nth-of-type(2) { animation-delay: 45ms; }
+.ticket:nth-of-type(3) { animation-delay: 90ms; }
+.ticket:nth-of-type(4) { animation-delay: 135ms; }
+.ticket:nth-of-type(5) { animation-delay: 180ms; }
+
+.ticket:hover,
+.tabla-goleadores:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(16, 40, 31, 0.12);
+}
+
+.card:hover {
+  box-shadow: 0 10px 28px rgba(16, 40, 31, 0.1);
+}
+
+.btn,
+.formato-opcion,
+.media-badge,
+.foto-badge {
+  transition: transform 0.18s ease, box-shadow 0.2s ease,
+    background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:not(:disabled):hover,
+.formato-opcion:hover,
+.media-badge:hover,
+.foto-badge:hover {
+  transform: translateY(-2px);
+}
+
+.btn:not(:disabled):active,
+.formato-opcion:active,
+.media-badge:active,
+.foto-badge:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn:not(:disabled):hover {
+  box-shadow: 0 7px 16px rgba(16, 40, 31, 0.2);
+}
+
+.campo input,
+.campo select,
+.goleador-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease, transform 0.2s ease;
+}
+
+.campo input:focus,
+.campo select:focus,
+.goleador-input:focus {
+  border-color: var(--ambar);
+  box-shadow: 0 0 0 3px rgba(232, 166, 61, 0.14);
+  background: white;
+}
+
+.jugador-row {
+  transition: background 0.2s ease, padding 0.25s ease,
+    transform 0.25s ease;
+}
+
+.jugador-row:hover {
+  background: rgba(156, 184, 164, 0.1);
+  transform: translateX(3px);
+}
+
+.resultado-circulo {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease;
+}
+
+.resultado-circulo:hover {
+  transform: translateY(-2px) scale(1.12);
+  box-shadow: 0 4px 9px rgba(16, 40, 31, 0.18);
+}
+
+.campo-wrap {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
+}
+
+.campo-wrap:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(16, 40, 31, 0.2);
+}
+
+.marcador-click {
+  transition: transform 0.18s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.marcador-click:hover {
+  transform: scale(1.08);
+}
+
+.selector-overlay,
+.equipo-nac-overlay,
+.carta-overlay {
+  animation: abrir-overlay 0.22s ease-out both;
+  backdrop-filter: blur(5px);
+}
+
+.selector-panel,
+.equipo-nac-panel {
+  animation: aparecer-suave 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.carta-html-wrap {
+  perspective: 900px;
+}
+
+.carta-contenedor {
+  animation: presentar-carta 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.35s ease;
+}
+
+.carta-contenedor:hover {
+  transform: perspective(900px) translateY(-8px) rotateX(2deg) rotateY(-3deg) scale(1.025);
+  filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.48));
+}
+
+.carta-html::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.05) 43%,
+    rgba(255, 255, 255, 0.48) 50%,
+    rgba(255, 255, 255, 0.06) 57%,
+    transparent 65%
+  );
+  transform: translateX(-180%) skewX(-18deg);
+  animation: brillo-carta 2.8s 0.35s ease-in-out infinite;
+}
+
+.carta-html-foto {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.4s ease;
+}
+
+.carta-contenedor:hover .carta-html-foto {
+  transform: scale(0.84) translateY(-2px);
+  filter: saturate(1.08) contrast(1.03);
+}
+
+.carta-cerrar {
+  z-index: 6;
+  transition: transform 0.2s ease, background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.carta-cerrar:hover {
+  transform: rotate(90deg) scale(1.08);
+  background: var(--ambar);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 560px) {
+  .ticket:hover,
+  .card:hover,
+  .tabla-goleadores:hover,
+  .campo-wrap:hover,
+  .jugador-row:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
